@@ -23,20 +23,24 @@ def list_users():
 @role_required('Admin')
 def create_user():
     roles = execute_query("SELECT role_id, role_name FROM ROLES ORDER BY role_id")
+    employees = execute_query("SELECT employee_id, first_name || ' ' || last_name AS fullname FROM EMPLOYEES ORDER BY first_name")
     if request.method == 'POST':
-        username = request.form['username'].strip()
-        password = hash_password(request.form['password'])
-        email    = request.form['email'].strip()
-        role_id  = int(request.form['role_id'])
+        username    = request.form['username'].strip()
+        password    = hash_password(request.form['password'])
+        email       = request.form.get('email', '').strip()
+        role_id     = int(request.form['role_id'])
+        employee_id = request.form.get('employee_id')
+        employee_id = int(employee_id) if employee_id else None
+
         dml(
-            """INSERT INTO USERS (username, password, email, role_id)
-               VALUES (:username, :password, :email, :role_id)""",
-            {'username': username, 'password': password, 'email': email, 'role_id': role_id},
+            """INSERT INTO USERS (username, password, email, role_id, employee_id)
+               VALUES (:username, :password, :email, :role_id, :employee_id)""",
+            {'username': username, 'password': password, 'email': email, 'role_id': role_id, 'employee_id': employee_id},
             fetch=False
         )
         flash('User created successfully.', 'success')
         return redirect(url_for('users.list_users'))
-    return render_template('users/form.html', user=None, roles=roles)
+    return render_template('users/form.html', user=None, roles=roles, employees=employees)
 
 
 @user_bp.route('/<int:user_id>/edit', methods=['GET', 'POST'])
@@ -44,6 +48,7 @@ def create_user():
 @role_required('Admin')
 def edit_user(user_id):
     roles = execute_query("SELECT role_id, role_name FROM ROLES ORDER BY role_id")
+    employees = execute_query("SELECT employee_id, first_name || ' ' || last_name AS fullname FROM EMPLOYEES ORDER BY first_name")
     user  = execute_one("SELECT * FROM USERS WHERE user_id = :id", {'id': user_id})
     if not user:
         flash('User not found.', 'danger')
@@ -51,25 +56,28 @@ def edit_user(user_id):
 
     if request.method == 'POST':
         username = request.form['username'].strip()
-        email    = request.form['email'].strip()
-        role_id  = int(request.form['role_id'])
-        new_pw   = request.form.get('password', '').strip()
+        email       = request.form.get('email', '').strip()
+        role_id     = int(request.form['role_id'])
+        employee_id = request.form.get('employee_id')
+        employee_id = int(employee_id) if employee_id else None
+        new_pw      = request.form.get('password', '').strip()
+        
         if new_pw:
             dml(
-                """UPDATE USERS SET username=:u, email=:e, role_id=:r, password=:p
+                """UPDATE USERS SET username=:u, email=:e, role_id=:r, employee_id=:emp, password=:p
                    WHERE user_id=:id""",
-                {'u': username, 'e': email, 'r': role_id, 'p': hash_password(new_pw), 'id': user_id},
+                {'u': username, 'e': email, 'r': role_id, 'emp': employee_id, 'p': hash_password(new_pw), 'id': user_id},
                 fetch=False
             )
         else:
             dml(
-                "UPDATE USERS SET username=:u, email=:e, role_id=:r WHERE user_id=:id",
-                {'u': username, 'e': email, 'r': role_id, 'id': user_id},
+                "UPDATE USERS SET username=:u, email=:e, role_id=:r, employee_id=:emp WHERE user_id=:id",
+                {'u': username, 'e': email, 'r': role_id, 'emp': employee_id, 'id': user_id},
                 fetch=False
             )
         flash('User updated.', 'success')
         return redirect(url_for('users.list_users'))
-    return render_template('users/form.html', user=user, roles=roles)
+    return render_template('users/form.html', user=user, roles=roles, employees=employees)
 
 
 @user_bp.route('/<int:user_id>/delete', methods=['POST'])
