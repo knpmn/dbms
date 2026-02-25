@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <h1 class="h4 fw-bold mb-0 d-flex align-items-center gap-2">
+        <span class="material-icons" style="color:#6f42c1">people</span> Employees
+    </h1>
+    <a href="{{ url_for('employees.create_employee') }}" class="btn btn-sm" style="background:#6f42c1;color:#fff">
+        <span class="material-icons" style="font-size:16px;vertical-align:-3px">add</span> Add Employee
+    </a>
+</div>
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white border-bottom fw-semibold d-flex align-items-center gap-2">
+        <span class="material-icons-outlined" style="color:#6f42c1;font-size:20px">table_rows</span> Employee Records
+    </div>
+    <div class="table-responsive">
+        <table class="data-table table table-hover mb-0" id="emp-table">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>Position</th>
+                    <th>Salary</th>
+                    <th>Start Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in employees %}
+                <tr>
+                    <td>{{ e.employee_id }}</td>
+                    <td><strong>{{ e.first_name }} {{ e.last_name }}</strong></td>
+                    <td>{{ e.department_name }}</td>
+                    <td>{{ e.position_name }}</td>
+                    <td>{{ "{:,.0f}".format(e.salary) }}</td>
+                    <td>{{ e.start_date }}</td>
+                    <td>
+                        <a href="{{ url_for('employees.edit_employee', employee_id=e.employee_id) }}"
+                            class="btn btn-sm btn-outline-primary py-0 px-2"><span class="material-icons"
+                                style="font-size:15px;vertical-align:-3px">edit</span></a>
+                        <form method="POST"
+                            action="{{ url_for('employees.delete_employee', employee_id=e.employee_id) }}"
+                            class="delete-form d-inline">
+                            <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2"><span
+                                    class="material-icons"
+                                    style="font-size:15px;vertical-align:-3px">delete</span></button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

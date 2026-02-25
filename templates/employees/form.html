@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="h5 fw-bold mb-4 d-flex align-items-center gap-2">
+    <span class="material-icons" style="color:#6f42c1">{{ 'edit' if emp else 'person_add' }}</span>
+    {{ 'Edit Employee' if emp else 'New Employee' }}
+</h2>
+<div class="card border-0 shadow-sm" style="max-width:640px">
+    <div class="card-body p-4">
+        <form method="POST">
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-medium" for="first_name">First Name</label>
+                    <input id="first_name" type="text" name="first_name" required class="form-control"
+                        value="{{ emp.first_name if emp else '' }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-medium" for="last_name">Last Name</label>
+                    <input id="last_name" type="text" name="last_name" required class="form-control"
+                        value="{{ emp.last_name if emp else '' }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-medium" for="salary">Salary</label>
+                    <input id="salary" type="number" name="salary" step="0.01" required class="form-control"
+                        value="{{ emp.salary if emp else '' }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-medium" for="start_date">Start Date</label>
+                    <input id="start_date" type="date" name="start_date" required class="form-control"
+                        value="{{ emp.start_date if emp else '' }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-medium">Department</label>
+                    <select name="department_id" required class="form-select">
+                        {% for d in depts %}
+                        <option value="{{ d.department_id }}" {% if emp and emp.department_id==d.department_id
+                            %}selected{% endif %}>{{ d.department_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-medium">Position</label>
+                    <select name="position_id" required class="form-select">
+                        {% for p in positions %}
+                        <option value="{{ p.position_id }}" {% if emp and emp.position_id==p.position_id %}selected{%
+                            endif %}>{{ p.position_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-sm px-3" style="background:#6f42c1;color:#fff">Save</button>
+                <a href="{{ url_for('employees.list_employees') }}"
+                    class="btn btn-sm btn-outline-secondary px-3">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

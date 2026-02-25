@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="h5 fw-bold mb-4 d-flex align-items-center gap-2">
+    <span class="material-icons" style="color:#6f42c1">{{ 'edit' if record else 'add_alert' }}</span>
+    {{ 'Edit Penalty' if record else 'New Penalty' }}
+</h2>
+<div class="card border-0 shadow-sm" style="max-width:560px">
+    <div class="card-body p-4">
+        <form method="POST">
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-medium">Penalty Level</label>
+                    <select name="penalty_level" required class="form-select">
+                        {% for lvl in ['Minor','Major','Severe'] %}
+                        <option value="{{ lvl }}" {% if record and record.penalty_level==lvl %}selected{% endif %}>{{
+                            lvl }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-medium" for="penalty_date">Penalty Date</label>
+                    <input id="penalty_date" type="date" name="penalty_date" required class="form-control"
+                        value="{{ record.penalty_date if record else '' }}">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-medium" for="description">Description</label>
+                <textarea id="description" name="description" required rows="3"
+                    class="form-control">{{ record.description if record else '' }}</textarea>
+            </div>
+            <div class="mb-4">
+                <label class="form-label fw-medium">Employee</label>
+                <select name="employee_id" required class="form-select">
+                    {% for e in employees %}
+                    <option value="{{ e.employee_id }}" {% if record and record.employee_id==e.employee_id %}selected{%
+                        endif %}>{{ e.fullname }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-sm px-3" style="background:#6f42c1;color:#fff">Save</button>
+                <a href="{{ url_for('penalties.list_penalties') }}"
+                    class="btn btn-sm btn-outline-secondary px-3">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

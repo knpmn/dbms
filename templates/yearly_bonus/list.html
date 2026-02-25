@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <h1 class="h4 fw-bold mb-0 d-flex align-items-center gap-2">
+        <span class="material-icons" style="color:#6f42c1">emoji_events</span> Yearly Bonus
+    </h1>
+    {% if role in ('Admin','HR Staff') %}
+    <a href="{{ url_for('yearly_bonus.create_yearly_bonus') }}" class="btn btn-sm"
+        style="background:#6f42c1;color:#fff">
+        <span class="material-icons" style="font-size:16px;vertical-align:-3px">add</span> Add Yearly Bonus
+    </a>
+    {% endif %}
+</div>
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white border-bottom fw-semibold">Yearly Bonus Records</div>
+    <div class="table-responsive">
+        <table class="data-table table table-hover mb-0" id="yb-table">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Year</th>
+                    <th>Bonus Points</th>
+                    <th>Score</th>
+                    {% if role in ('Admin','HR Staff') %}<th>Employee</th>
+                    <th>Actions</th>{% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in records %}
+                <tr>
+                    <td>{{ r.yearly_bonus_id }}</td>
+                    <td><strong>{{ r.year_col }}</strong></td>
+                    <td>{{ r.total_bonus_point }}</td>
+                    <td><span class="badge bg-success">{{ "{:,.2f}".format(r.yearly_bonus_score) }}</span></td>
+                    {% if role in ('Admin','HR Staff') %}
+                    <td>{{ r.emp_name }}</td>
+                    <td>
+                        <a href="{{ url_for('yearly_bonus.edit_yearly_bonus', yb_id=r.yearly_bonus_id) }}"
+                            class="btn btn-sm btn-outline-primary py-0 px-2"><span class="material-icons"
+                                style="font-size:15px;vertical-align:-3px">edit</span></a>
+                        <form method="POST"
+                            action="{{ url_for('yearly_bonus.delete_yearly_bonus', yb_id=r.yearly_bonus_id) }}"
+                            class="delete-form d-inline">
+                            <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2"><span
+                                    class="material-icons"
+                                    style="font-size:15px;vertical-align:-3px">delete</span></button>
+                        </form>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

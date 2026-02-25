@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <h1 class="h4 fw-bold mb-0 d-flex align-items-center gap-2">
+        <span class="material-icons" style="color:#6f42c1">badge</span> Roles
+    </h1>
+    <a href="{{ url_for('roles.create_role') }}" class="btn btn-sm" style="background:#6f42c1;color:#fff">
+        <span class="material-icons" style="font-size:16px;vertical-align:-3px">add</span> Add Role
+    </a>
+</div>
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white border-bottom fw-semibold">Role Records</div>
+    <div class="table-responsive">
+        <table class="data-table table table-hover mb-0" id="role-table">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Role Name</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in roles %}
+                <tr>
+                    <td>{{ r.role_id }}</td>
+                    <td><strong>{{ r.role_name }}</strong></td>
+                    <td>
+                        <a href="{{ url_for('roles.edit_role', role_id=r.role_id) }}"
+                            class="btn btn-sm btn-outline-primary py-0 px-2"><span class="material-icons"
+                                style="font-size:15px;vertical-align:-3px">edit</span></a>
+                        <form method="POST" action="{{ url_for('roles.delete_role', role_id=r.role_id) }}"
+                            class="delete-form d-inline">
+                            <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2"><span
+                                    class="material-icons"
+                                    style="font-size:15px;vertical-align:-3px">delete</span></button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

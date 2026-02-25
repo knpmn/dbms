@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <h1 class="h4 fw-bold mb-0 d-flex align-items-center gap-2">
+        <span class="material-icons" style="color:#6f42c1">account_tree</span> Positions
+    </h1>
+    <a href="{{ url_for('positions.create_position') }}" class="btn btn-sm" style="background:#6f42c1;color:#fff">
+        <span class="material-icons" style="font-size:16px;vertical-align:-3px">add</span> Add Position
+    </a>
+</div>
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white border-bottom fw-semibold">Position Records</div>
+    <div class="table-responsive">
+        <table class="data-table table table-hover mb-0" id="pos-table">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Min Salary</th>
+                    <th>Max Salary</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in positions %}
+                <tr>
+                    <td>{{ p.position_id }}</td>
+                    <td><strong>{{ p.position_name }}</strong></td>
+                    <td>{{ "{:,.0f}".format(p.min_salary) if p.min_salary else '—' }}</td>
+                    <td>{{ "{:,.0f}".format(p.max_salary) if p.max_salary else '—' }}</td>
+                    <td>
+                        <a href="{{ url_for('positions.edit_position', position_id=p.position_id) }}"
+                            class="btn btn-sm btn-outline-primary py-0 px-2"><span class="material-icons"
+                                style="font-size:15px;vertical-align:-3px">edit</span></a>
+                        <form method="POST"
+                            action="{{ url_for('positions.delete_position', position_id=p.position_id) }}"
+                            class="delete-form d-inline">
+                            <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2"><span
+                                    class="material-icons"
+                                    style="font-size:15px;vertical-align:-3px">delete</span></button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

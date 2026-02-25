@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <h1 class="h4 fw-bold mb-0 d-flex align-items-center gap-2">
+        <span class="material-icons text-purple">admin_panel_settings</span> Admin Dashboard
+    </h1>
+</div>
+<p class="text-muted mb-4">Welcome, <strong>{{ session.username }}</strong>. You have full system access.</p>
+
+<div class="row g-3 mb-4">
+    {% for icon, color, label, val in [
+    ('manage_accounts','#6f42c1','Total Users', stats.users),
+    ('badge','#20c997','Total Roles', stats.roles),
+    ('people','#0d6efd','Employees', stats.employees),
+    ('business','#fd7e14','Departments', stats.departments),
+    ] %}
+    <div class="col-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body d-flex align-items-center gap-3">
+                <div class="rounded-3 p-2" style="background:{{ color }}22">
+                    <span class="material-icons" style="color:{{ color }};font-size:28px">{{ icon }}</span>
+                </div>
+                <div>
+                    <div class="text-muted"
+                        style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em">{{ label }}
+                    </div>
+                    <div class="fw-bold" style="font-size:26px">{{ val }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="row g-3">
+    <div class="col-12 col-xl-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-bottom fw-semibold">Quick Management Links</div>
+            <div class="card-body">
+                <div class="row g-2">
+                    {% for ep, icon, label in [
+                    ('users.list_users','manage_accounts','Users'),
+                    ('roles.list_roles','badge','Roles'),
+                    ('employees.list_employees','people','Employees'),
+                    ('departments.list_departments','business','Departments'),
+                    ('positions.list_positions','account_tree','Positions'),
+                    ('attendance.list_attendance','event_available','Attendance'),
+                    ('bonus_points.list_bonus_points','star','Bonus Points'),
+                    ('yearly_bonus.list_yearly_bonus','emoji_events','Yearly Bonus'),
+                    ('penalties.list_penalties','warning','Penalties'),
+                    ('bp.list_bp','description','B&P Log'),
+                    ] %}
+                    <div class="col-6">
+                        <a href="{{ url_for(ep) }}"
+                            class="btn btn-outline-secondary btn-sm w-100 text-start d-flex align-items-center gap-2">
+                            <span class="material-icons-outlined" style="font-size:18px;color:#6f42c1">{{ icon }}</span>
+                            {{ label }}
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-xl-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-bottom fw-semibold">Headcount by Department</div>
+            <div class="card-body">
+                <div style="position:relative;min-height:220px"><canvas id="deptChart"></canvas></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    (function () {
+        var ctx = document.getElementById('deptChart'); if (!ctx) return;
+        var d = {{ dept_data| tojson | safe
+    }};
+    new Chart(ctx, { type: 'bar', data: { labels: d.map(x => x.department_name), datasets: [{ label: 'Employees', data: d.map(x => x.emp_count), backgroundColor: '#6f42c1', borderRadius: 6 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } }, x: { grid: { display: false } } } } });
+}) ();
+</script>
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="h5 fw-bold mb-4 d-flex align-items-center gap-2">
+    <span class="material-icons" style="color:#6f42c1">{{ 'edit' if record else 'post_add' }}</span>
+    {{ 'Edit B&P Entry' if record else 'New B&P Log Entry' }}
+</h2>
+<div class="card border-0 shadow-sm" style="max-width:560px">
+    <div class="card-body p-4">
+        <form method="POST">
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <label class="form-label fw-medium">Type</label>
+                    <select name="type_col" required class="form-select">
+                        {% for t in ['Bonus','Penalty'] %}
+                        <option value="{{ t }}" {% if record and record.type_col==t %}selected{% endif %}>{{ t }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-medium" for="reference_id">Reference ID</label>
+                    <input id="reference_id" type="number" name="reference_id" required class="form-control"
+                        value="{{ record.reference_id if record else '' }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-medium" for="created_date">Created Date</label>
+                    <input id="created_date" type="date" name="created_date" required class="form-control"
+                        value="{{ record.created_date if record else '' }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-medium">Employee</label>
+                    <select name="employee_id" required class="form-select">
+                        {% for e in employees %}
+                        <option value="{{ e.employee_id }}" {% if record and record.employee_id==e.employee_id
+                            %}selected{% endif %}>{{ e.fullname }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-sm px-3" style="background:#6f42c1;color:#fff">Save</button>
+                <a href="{{ url_for('bp.list_bp') }}" class="btn btn-sm btn-outline-secondary px-3">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

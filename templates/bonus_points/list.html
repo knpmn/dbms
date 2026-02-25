@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <h1 class="h4 fw-bold mb-0 d-flex align-items-center gap-2">
+        <span class="material-icons" style="color:#6f42c1">star</span> Bonus Points
+    </h1>
+    {% if role in ('Admin','HR Staff') %}
+    <a href="{{ url_for('bonus_points.create_bonus_point') }}" class="btn btn-sm" style="background:#6f42c1;color:#fff">
+        <span class="material-icons" style="font-size:16px;vertical-align:-3px">add</span> Add Bonus Point
+    </a>
+    {% endif %}
+</div>
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white border-bottom fw-semibold">Bonus Point Records</div>
+    <div class="table-responsive">
+        <table class="data-table table table-hover mb-0" id="bp-tbl">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Points</th>
+                    <th>Reason</th>
+                    <th>Date</th>
+                    {% if role in ('Admin','HR Staff') %}<th>Employee</th>
+                    <th>Actions</th>{% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in records %}
+                <tr>
+                    <td>{{ r.bonus_point_id }}</td>
+                    <td><span class="badge bg-success">+{{ r.points }}</span></td>
+                    <td>{{ r.reason }}</td>
+                    <td>{{ r.date_awarded }}</td>
+                    {% if role in ('Admin','HR Staff') %}
+                    <td>{{ r.emp_name }}</td>
+                    <td>
+                        <a href="{{ url_for('bonus_points.edit_bonus_point', bp_id=r.bonus_point_id) }}"
+                            class="btn btn-sm btn-outline-primary py-0 px-2"><span class="material-icons"
+                                style="font-size:15px;vertical-align:-3px">edit</span></a>
+                        <form method="POST"
+                            action="{{ url_for('bonus_points.delete_bonus_point', bp_id=r.bonus_point_id) }}"
+                            class="delete-form d-inline">
+                            <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2"><span
+                                    class="material-icons"
+                                    style="font-size:15px;vertical-align:-3px">delete</span></button>
+                        </form>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

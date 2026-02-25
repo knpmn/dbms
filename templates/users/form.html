@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="h5 fw-bold mb-4 d-flex align-items-center gap-2">
+    <span class="material-icons" style="color:#6f42c1">{{ 'edit' if user else 'person_add' }}</span>
+    {{ 'Edit User' if user else 'New User' }}
+</h2>
+<div class="card border-0 shadow-sm" style="max-width:560px">
+    <div class="card-body p-4">
+        <form method="POST">
+            <div class="mb-3">
+                <label class="form-label fw-medium" for="username">Username</label>
+                <input id="username" type="text" name="username" required class="form-control"
+                    value="{{ user.username if user else '' }}">
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-medium" for="password">
+                    Password {% if user %}<span class="text-muted fw-normal">(leave blank to keep)</span>{% endif %}
+                </label>
+                <input id="password" type="password" name="password" {% if not user %}required{% endif %}
+                    class="form-control">
+            </div>
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <label class="form-label fw-medium">Role</label>
+                    <select name="role_id" required class="form-select">
+                        {% for r in roles %}
+                        <option value="{{ r.role_id }}" {% if user and user.role_id==r.role_id %}selected{% endif %}>{{
+                            r.role_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-medium">Linked Employee</label>
+                    <select name="employee_id" class="form-select">
+                        <option value="">-- No Employee --</option>
+                        {% for e in employees %}
+                        <option value="{{ e.employee_id }}" {% if user and user.employee_id==e.employee_id %}selected{%
+                            endif %}>{{ e.fullname }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-sm px-3" style="background:#6f42c1;color:#fff">Save</button>
+                <a href="{{ url_for('users.list_users') }}" class="btn btn-sm btn-outline-secondary px-3">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

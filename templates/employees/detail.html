@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="h4 fw-bold mb-4 d-flex align-items-center gap-2">
+    <span class="material-icons" style="color:#6f42c1">id_card</span> My Profile
+</h1>
+{% if emp %}
+<div class="card border-0 shadow-sm" style="max-width:480px">
+    <div class="card-body p-4">
+        <div class="d-flex align-items-center gap-3 mb-4">
+            <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                style="width:56px;height:56px;background:#6f42c1">
+                <span class="material-icons text-white" style="font-size:28px">person</span>
+            </div>
+            <div>
+                <div class="fw-bold fs-5">{{ emp.first_name }} {{ emp.last_name }}</div>
+                <div class="text-muted small">{{ emp.position_name }}</div>
+            </div>
+        </div>
+        <table class="table table-sm table-borderless mb-0">
+            <tbody>
+                <tr>
+                    <th class="text-muted fw-medium" style="width:130px">Department</th>
+                    <td>{{ emp.department_name }}</td>
+                </tr>
+                <tr>
+                    <th class="text-muted fw-medium">Position</th>
+                    <td>{{ emp.position_name }}</td>
+                </tr>
+                <tr>
+                    <th class="text-muted fw-medium">Salary</th>
+                    <td>{{ "{:,.0f}".format(emp.salary) }}</td>
+                </tr>
+                <tr>
+                    <th class="text-muted fw-medium">Start Date</th>
+                    <td>{{ emp.start_date }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="card border-0 shadow-sm" style="max-width:480px">
+    <div class="card-body text-center text-muted py-5">
+        <span class="material-icons d-block mb-2" style="font-size:3rem;opacity:.3">person_off</span>
+        No employee profile is linked to your account. Contact your administrator.
+    </div>
+</div>
+{% endif %}
+{% endblock %}

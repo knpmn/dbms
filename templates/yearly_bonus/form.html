@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="h5 fw-bold mb-4 d-flex align-items-center gap-2">
+    <span class="material-icons" style="color:#6f42c1">{{ 'edit' if record else 'emoji_events' }}</span>
+    {{ 'Edit Yearly Bonus' if record else 'New Yearly Bonus' }}
+</h2>
+<div class="card border-0 shadow-sm" style="max-width:560px">
+    <div class="card-body p-4">
+        <form method="POST">
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <label class="form-label fw-medium" for="year_col">Bonus Year</label>
+                    <input id="year_col" type="number" name="year_col" required placeholder="e.g. 2024" min="2000"
+                        max="2100" class="form-control" value="{{ record.year_col if record else '' }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-medium" for="total_bonus_point">Total Bonus Points</label>
+                    <input id="total_bonus_point" type="number" name="total_bonus_point" step="0.01" required
+                        class="form-control" value="{{ record.total_bonus_point if record else '' }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-medium" for="yearly_bonus_score">Yearly Bonus Score</label>
+                    <input id="yearly_bonus_score" type="number" name="yearly_bonus_score" step="0.01" required
+                        class="form-control" value="{{ record.yearly_bonus_score if record else '' }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-medium">Employee</label>
+                    <select name="employee_id" required class="form-select">
+                        {% for e in employees %}
+                        <option value="{{ e.employee_id }}" {% if record and record.employee_id==e.employee_id
+                            %}selected{% endif %}>{{ e.fullname }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-sm px-3" style="background:#6f42c1;color:#fff">Save</button>
+                <a href="{{ url_for('yearly_bonus.list_yearly_bonus') }}"
+                    class="btn btn-sm btn-outline-secondary px-3">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

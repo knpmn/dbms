@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+.env
+.venv
+env/
+venv/
+
+# Secrets / Config with credentials
+config.py
+
+# Database files
+*.db
+*.sqlite3
+
+# One-off fix/migration scripts (not part of the app)
+apply_bootstrap_forms.py
+apply_bootstrap_lists.py
+apply_breadcrumbs.py
+clean_templates.py
+clean_templates2.py
+clean_templates3.py
+fix_breadcrumbs.py
+fix_spacing.py
+fix_ui.py
+recover.py
+recovered/
+
+# Editor / OS
+.vscode/
+.idea/
+*.DS_Store
+Thumbs.db
+
+# Logs
+*.log

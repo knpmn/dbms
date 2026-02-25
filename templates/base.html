@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Smart HR System</title>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css" rel="stylesheet">
+        <style>
+                body {
+                        font-family: 'Roboto', sans-serif;
+                        background: #f0f2f5;
+                }
+
+                /* Sidebar */
+                #sidebar {
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        bottom: 0;
+                        width: 240px;
+                        background: #212529;
+                        z-index: 1040;
+                        display: flex;
+                        flex-direction: column;
+                        overflow: hidden;
+                }
+
+                #sidebar .sidebar-brand {
+                        background: #6f42c1;
+                        padding: 16px;
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                }
+
+                #sidebar .sidebar-brand .brand-icon {
+                        width: 36px;
+                        height: 36px;
+                        border-radius: 8px;
+                        background: rgba(255, 255, 255, .15);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                }
+
+                #sidebar .brand-name {
+                        color: #fff;
+                        font-weight: 700;
+                        font-size: 15px;
+                        line-height: 1.2;
+                }
+
+                #sidebar .brand-sub {
+                        color: rgba(255, 255, 255, .55);
+                        font-size: 11px;
+                }
+
+                #sidebar nav {
+                        flex: 1;
+                        overflow-y: auto;
+                        padding: 8px;
+                }
+
+                #sidebar .nav-section {
+                        font-size: 10px;
+                        font-weight: 700;
+                        text-transform: uppercase;
+                        letter-spacing: .08em;
+                        color: rgba(255, 255, 255, .3);
+                        padding: 14px 8px 4px;
+                }
+
+                #sidebar .nav-link {
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                        padding: 9px 12px;
+                        border-radius: 8px;
+                        color: #ced4da;
+                        font-size: 14px;
+                        margin-bottom: 2px;
+                }
+
+                #sidebar .nav-link:hover {
+                        background: rgba(255, 255, 255, .08);
+                        color: #fff;
+                }
+
+                #sidebar .nav-link.active {
+                        background: #6f42c1;
+                        color: #fff;
+                        font-weight: 500;
+                }
+
+                #sidebar .nav-link .material-icons-outlined {
+                        font-size: 20px;
+                }
+
+                #sidebar .sidebar-footer {
+                        border-top: 1px solid rgba(255, 255, 255, .1);
+                        padding: 10px;
+                }
+
+                #sidebar .user-row {
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                        padding: 8px 10px;
+                }
+
+                #sidebar .user-avatar {
+                        width: 32px;
+                        height: 32px;
+                        border-radius: 50%;
+                        background: #6f42c1;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        flex-shrink: 0;
+                }
+
+                #sidebar .user-avatar .material-icons {
+                        color: #fff;
+                        font-size: 18px;
+                }
+
+                #sidebar .user-name {
+                        color: #e9ecef;
+                        font-size: 13px;
+                        font-weight: 500;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                }
+
+                #sidebar .user-role {
+                        color: rgba(255, 255, 255, .4);
+                        font-size: 11px;
+                }
+
+                #sidebar .logout-link {
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        padding: 8px 10px;
+                        border-radius: 8px;
+                        color: #f08080;
+                        font-size: 13px;
+                        text-decoration: none;
+                }
+
+                #sidebar .logout-link:hover {
+                        background: rgba(220, 53, 69, .15);
+                        color: #f08080;
+                }
+
+                #sidebar .logout-link .material-icons {
+                        font-size: 18px;
+                }
+
+                /* Topbar */
+                #topbar {
+                        position: fixed;
+                        top: 0;
+                        left: 240px;
+                        right: 0;
+                        height: 52px;
+                        background: #6f42c1;
+                        z-index: 1030;
+                        display: flex;
+                        align-items: center;
+                        padding: 0 20px;
+                        gap: 12px;
+                        box-shadow: 0 2px 4px rgba(0, 0, 0, .15);
+                }
+
+                #topbar .page-title {
+                        color: #fff;
+                        font-size: 17px;
+                        font-weight: 500;
+                        flex: 1;
+                }
+
+                #topbar .role-badge {
+                        background: rgba(255, 255, 255, .15);
+                        color: #fff;
+                        font-size: 12px;
+                        padding: 3px 12px;
+                        border-radius: 20px;
+                }
+
+                /* Main */
+                #main {
+                        margin-left: 240px;
+                        margin-top: 52px;
+                        padding: 24px;
+                        min-height: calc(100vh - 52px);
+                }
+
+                /* DataTables tweaks */
+                table.dataTable thead th {
+                        background: #f8f9fa;
+                        font-size: 11px;
+                        font-weight: 700;
+                        text-transform: uppercase;
+                        letter-spacing: .05em;
+                        color: #6c757d;
+                        border-bottom: 2px solid #dee2e6 !important;
+                }
+
+                table.dataTable tbody td {
+                        font-size: 14px;
+                        vertical-align: middle;
+                }
+
+                table.dataTable tbody tr:hover>td {
+                        background: #f5f0ff !important;
+                }
+
+                table.dataTable {
+                        border-collapse: collapse !important;
+                }
+
+                div.dataTables_wrapper {
+                        padding: 0;
+                }
+
+                div.dataTables_filter input,
+                div.dataTables_length select {
+                        border: 1px solid #dee2e6;
+                        border-radius: 6px;
+                        padding: 5px 10px;
+                        font-size: 13px;
+                        outline: none;
+                }
+
+                div.dataTables_filter input:focus,
+                div.dataTables_length select:focus {
+                        border-color: #6f42c1;
+                        box-shadow: 0 0 0 3px rgba(111, 66, 193, .15);
+                }
+
+                div.dataTables_info,
+                div.dataTables_length,
+                div.dataTables_filter,
+                div.dataTables_paginate {
+                        font-size: 13px;
+                        color: #6c757d;
+                        padding: 10px 16px;
+                }
+
+                .paginate_button {
+                        cursor: pointer;
+                        padding: 4px 10px;
+                        border-radius: 5px;
+                }
+
+                .paginate_button.current {
+                        background: #6f42c1 !important;
+                        color: #fff !important;
+                }
+
+                .paginate_button:hover:not(.current):not(.disabled) {
+                        background: #ede7f6 !important;
+                }
+
+                .paginate_button.disabled {
+                        opacity: .4;
+                        cursor: default;
+                }
+
+                /* Delete modal */
+                #deleteModal {
+                        display: none;
+                        position: fixed;
+                        inset: 0;
+                        background: rgba(0, 0, 0, .4);
+                        z-index: 2000;
+                        align-items: center;
+                        justify-content: center;
+                        padding: 20px;
+                }
+
+                #deleteModal.show {
+                        display: flex;
+                }
+        </style>
+</head>
+
+<body>
+
+        {% if session.user_id %}
+
+        <!-- Sidebar -->
+        <div id="sidebar">
+                <div class="sidebar-brand">
+                        <div class="brand-icon"><span class="material-icons"
+                                        style="color:#fff;font-size:20px">work</span></div>
+                        <div>
+                                <div class="brand-name">Smart HR</div>
+                                <div class="brand-sub">HR Management System</div>
+                        </div>
+                </div>
+
+                <nav>
+                        <a href="{{ url_for('auth.dashboard') }}"
+                                class="nav-link {% if request.endpoint == 'auth.dashboard' %}active{% endif %}">
+                                <span class="material-icons-outlined">dashboard</span> Dashboard
+                        </a>
+
+                        {% if session.role == 'Admin' %}
+                        <div class="nav-section">Administration</div>
+                        <a href="{{ url_for('users.list_users') }}"
+                                class="nav-link {% if 'users' in request.endpoint %}active{% endif %}">
+                                <span class="material-icons-outlined">manage_accounts</span> Users
+                        </a>
+                        <a href="{{ url_for('roles.list_roles') }}"
+                                class="nav-link {% if 'roles' in request.endpoint %}active{% endif %}">
+                                <span class="material-icons-outlined">badge</span> Roles
+                        </a>
+                        <div class="nav-section">HR Operations</div>
+                        {% elif session.role == 'HR Staff' %}
+                        <div class="nav-section">HR Operations</div>
+                        {% else %}
+                        <div class="nav-section">My Records</div>
+                        {% endif %}
+
+                        {% if session.role in ('Admin', 'HR Staff') %}
+                        <a href="{{ url_for('employees.list_employees') }}"
+                                class="nav-link {% if 'employees' in request.endpoint %}active{% endif %}">
+                                <span class="material-icons-outlined">people</span> Employees
+                        </a>
+                        <a href="{{ url_for('departments.list_departments') }}"
+                                class="nav-link {% if 'departments' in request.endpoint %}active{% endif %}">
+                                <span class="material-icons-outlined">business</span> Departments
+                        </a>
+                        <a href="{{ url_for('positions.list_positions') }}"
+                                class="nav-link {% if 'positions' in request.endpoint %}active{% endif %}">
+                                <span class="material-icons-outlined">account_tree</span> Positions
+                        </a>
+                        {% endif %}
+
+                        <a href="{{ url_for('attendance.list_attendance') }}"
+                                class="nav-link {% if 'attendance' in request.endpoint %}active{% endif %}">
+                                <span class="material-icons-outlined">event_available</span>
+                                {% if session.role == 'Employee' %}My {% endif %}Attendance
+                        </a>
+                        <a href="{{ url_for('bonus_points.list_bonus_points') }}"
+                                class="nav-link {% if 'bonus_points' in request.endpoint %}active{% endif %}">
+                                <span class="material-icons-outlined">star</span>
+                                {% if session.role == 'Employee' %}My {% endif %}Bonus Points
+                        </a>
+                        <a href="{{ url_for('yearly_bonus.list_yearly_bonus') }}"
+                                class="nav-link {% if 'yearly' in request.endpoint %}active{% endif %}">
+                                <span class="material-icons-outlined">emoji_events</span>
+                                {% if session.role == 'Employee' %}My {% endif %}Yearly Bonus
+                        </a>
+                        <a href="{{ url_for('penalties.list_penalties') }}"
+                                class="nav-link {% if 'penalties' in request.endpoint %}active{% endif %}">
+                                <span class="material-icons-outlined">warning</span>
+                                {% if session.role == 'Employee' %}My {% endif %}Penalties
+                        </a>
+                        <a href="{{ url_for('bp.list_bp') }}"
+                                class="nav-link {% if 'bp' in request.endpoint and 'bonus' not in request.endpoint %}active{% endif %}">
+                                <span class="material-icons-outlined">description</span>
+                                {% if session.role == 'Employee' %}My {% endif %}B&amp;P Log
+                        </a>
+                </nav>
+
+                <div class="sidebar-footer">
+                        <div class="user-row">
+                                <div class="user-avatar"><span class="material-icons">person</span></div>
+                                <div style="overflow:hidden">
+                                        <div class="user-name">{{ session.username }}</div>
+                                        <div class="user-role">{{ session.role }}</div>
+                                </div>
+                        </div>
+                        <a href="{{ url_for('auth.logout') }}" class="logout-link">
+                                <span class="material-icons">logout</span> Logout
+                        </a>
+                </div>
+        </div>
+
+        <!-- Topbar -->
+        <div id="topbar">
+                <span class="page-title" id="pageTitle">Smart HR System</span>
+                <span class="role-badge">{{ session.role }}</span>
+        </div>
+
+        <!-- Main content -->
+        <div id="main">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                <div class="mb-3">
+                        {% for cat, msg in messages %}
+                        <div class="alert alert-{% if cat in ('danger','error') %}danger{% elif cat == 'success' %}success{% else %}info{% endif %} d-flex align-items-center gap-2 py-2"
+                                role="alert">
+                                <span class="material-icons" style="font-size:18px">{% if cat in ('danger','error')
+                                        %}error{% elif cat == 'success' %}check_circle{% else %}info{% endif %}</span>
+                                {{ msg }}
+                        </div>
+                        {% endfor %}
+                </div>
+                {% endif %}
+                {% endwith %}
+
+                {% block content %}{% endblock %}
+        </div>
+
+        <!-- Delete confirmation modal -->
+        <div id="deleteModal">
+                <div class="modal-dialog modal-sm">
+                        <div class="modal-content rounded-3 border-0 shadow">
+                                <div class="modal-header border-0 pb-0">
+                                        <h5 class="modal-title d-flex align-items-center gap-2">
+                                                <span class="material-icons text-danger">delete_forever</span> Confirm
+                                                Delete
+                                        </h5>
+                                </div>
+                                <div class="modal-body text-muted" style="font-size:14px">
+                                        Are you sure you want to delete this record? This action cannot be undone.
+                                </div>
+                                <div class="modal-footer border-0 pt-0">
+                                        <button id="modalCancelBtn"
+                                                class="btn btn-outline-secondary btn-sm">Cancel</button>
+                                        <button id="modalDeleteBtn" class="btn btn-danger btn-sm">Delete</button>
+                                </div>
+                        </div>
+                </div>
+        </div>
+
+        {% endif %}
+
+        <!-- Scripts -->
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+                document.addEventListener('DOMContentLoaded', function () {
+
+                        // DataTables
+                        document.querySelectorAll('.data-table').forEach(function (el) {
+                                if (!$.fn.DataTable.isDataTable(el)) {
+                                        $(el).DataTable({
+                                                pageLength: 10,
+                                                language: {
+                                                        search: '', searchPlaceholder: 'Search…',
+                                                        lengthMenu: 'Show _MENU_',
+                                                        info: '_START_–_END_ of _TOTAL_',
+                                                },
+                                                order: []
+                                        });
+                                }
+                        });
+
+                        // Page title (text nodes only, skip icon spans)
+                        var h1 = document.querySelector('h1');
+                        if (h1) {
+                                var title = Array.from(h1.childNodes)
+                                        .filter(function (n) { return n.nodeType === Node.TEXT_NODE; })
+                                        .map(function (n) { return n.textContent; })
+                                        .join('').trim();
+                                var el = document.getElementById('pageTitle');
+                                if (el) el.textContent = title || h1.textContent.trim();
+                        }
+
+                        // Delete modal
+                        var pendingForm = null;
+                        var modal = document.getElementById('deleteModal');
+                        document.querySelectorAll('.delete-form').forEach(function (form) {
+                                form.addEventListener('submit', function (e) {
+                                        e.preventDefault(); pendingForm = this;
+                                        modal.classList.add('show');
+                                });
+                        });
+                        document.getElementById('modalCancelBtn')?.addEventListener('click', function () {
+                                modal.classList.remove('show'); pendingForm = null;
+                        });
+                        document.getElementById('modalDeleteBtn')?.addEventListener('click', function () {
+                                if (pendingForm) { pendingForm.submit(); pendingForm = null; }
+                                modal.classList.remove('show');
+                        });
+                        modal?.addEventListener('click', function (e) {
+                                if (e.target === modal) { modal.classList.remove('show'); pendingForm = null; }
+                        });
+                });
+        </script>
+
+        {% block extra_js %}{% endblock %}
+</body>
+
+</html>

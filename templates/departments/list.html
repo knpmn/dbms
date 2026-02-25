@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <h1 class="h4 fw-bold mb-0 d-flex align-items-center gap-2">
+        <span class="material-icons" style="color:#6f42c1">business</span> Departments
+    </h1>
+    <a href="{{ url_for('departments.create_department') }}" class="btn btn-sm" style="background:#6f42c1;color:#fff">
+        <span class="material-icons" style="font-size:16px;vertical-align:-3px">add</span> Add Department
+    </a>
+</div>
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white border-bottom fw-semibold d-flex align-items-center gap-2">
+        <span class="material-icons-outlined" style="color:#6f42c1;font-size:20px">table_rows</span> Department Records
+    </div>
+    <div class="table-responsive">
+        <table class="data-table table table-hover mb-0" id="dept-table">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in depts %}
+                <tr>
+                    <td>{{ d.department_id }}</td>
+                    <td><strong>{{ d.department_name }}</strong></td>
+                    <td>{{ d.description }}</td>
+                    <td>
+                        <a href="{{ url_for('departments.edit_department', department_id=d.department_id) }}"
+                            class="btn btn-sm btn-outline-primary py-0 px-2"><span class="material-icons"
+                                style="font-size:15px;vertical-align:-3px">edit</span></a>
+                        <form method="POST"
+                            action="{{ url_for('departments.delete_department', department_id=d.department_id) }}"
+                            class="delete-form d-inline">
+                            <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2"><span
+                                    class="material-icons"
+                                    style="font-size:15px;vertical-align:-3px">delete</span></button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

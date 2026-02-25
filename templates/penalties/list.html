@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <h1 class="h4 fw-bold mb-0 d-flex align-items-center gap-2">
+        <span class="material-icons text-danger">warning</span> Penalties
+    </h1>
+    {% if role in ('Admin','HR Staff') %}
+    <a href="{{ url_for('penalties.create_penalty') }}" class="btn btn-sm" style="background:#6f42c1;color:#fff">
+        <span class="material-icons" style="font-size:16px;vertical-align:-3px">add</span> Add Penalty
+    </a>
+    {% endif %}
+</div>
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white border-bottom fw-semibold">Penalty Records</div>
+    <div class="table-responsive">
+        <table class="data-table table table-hover mb-0" id="pen-table">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Level</th>
+                    <th>Description</th>
+                    <th>Date</th>
+                    {% if role in ('Admin','HR Staff') %}<th>Employee</th>
+                    <th>Actions</th>{% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in records %}
+                <tr>
+                    <td>{{ r.penalty_id }}</td>
+                    <td>
+                        <span
+                            class="badge {% if r.penalty_level=='Minor' %}bg-warning text-dark{% elif r.penalty_level=='Major' %}bg-danger{% else %}bg-dark{% endif %}">
+                            {{ r.penalty_level }}
+                        </span>
+                    </td>
+                    <td>{{ r.description }}</td>
+                    <td>{{ r.penalty_date }}</td>
+                    {% if role in ('Admin','HR Staff') %}
+                    <td>{{ r.emp_name }}</td>
+                    <td>
+                        <a href="{{ url_for('penalties.edit_penalty', pen_id=r.penalty_id) }}"
+                            class="btn btn-sm btn-outline-primary py-0 px-2"><span class="material-icons"
+                                style="font-size:15px;vertical-align:-3px">edit</span></a>
+                        <form method="POST" action="{{ url_for('penalties.delete_penalty', pen_id=r.penalty_id) }}"
+                            class="delete-form d-inline">
+                            <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2"><span
+                                    class="material-icons"
+                                    style="font-size:15px;vertical-align:-3px">delete</span></button>
+                        </form>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
