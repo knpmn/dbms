@@ -59,7 +59,7 @@ def dashboard():
             'bonus_points': execute_one("SELECT COUNT(*) AS c FROM BONUS_POINTS")['c'],
             'yearly_bonus': execute_one("SELECT COUNT(*) AS c FROM YEARLY_BONUS")['c'],
             'penalties': execute_one("SELECT COUNT(*) AS c FROM PENALTIES")['c'],
-            'bp_log': execute_one("SELECT COUNT(*) AS c FROM BP_LOG")['c']
+            'bp_log': execute_one("SELECT COUNT(*) AS c FROM BP")['c']
         }
         dept_data = execute_query("""
             SELECT d.department_name, (SELECT COUNT(*) FROM EMPLOYEES e WHERE e.department_id = d.department_id) as emp_count
@@ -78,7 +78,7 @@ def dashboard():
             'bonus_points': execute_one("SELECT COUNT(*) AS c FROM BONUS_POINTS")['c'],
             'yearly_bonus': execute_one("SELECT COUNT(*) AS c FROM YEARLY_BONUS")['c'],
             'penalties': execute_one("SELECT COUNT(*) AS c FROM PENALTIES")['c'],
-            'bp_log': execute_one("SELECT COUNT(*) AS c FROM BP_LOG")['c']
+            'bp_log': execute_one("SELECT COUNT(*) AS c FROM BP")['c']
         }
         dept_data = execute_query("""
             SELECT d.department_name, (SELECT COUNT(*) FROM EMPLOYEES e WHERE e.department_id = d.department_id) as emp_count
