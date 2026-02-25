@@ -18,8 +18,8 @@
                 <tr>
                     <th>#</th>
                     <th>Points</th>
-                    <th>Reason</th>
-                    <th>Date</th>
+                    <th>Month</th>
+                    <th>Year</th>
                     {% if role in ('Admin','HR Staff') %}<th>Employee</th>
                     <th>Actions</th>{% endif %}
                 </tr>
@@ -29,8 +29,8 @@
                 <tr>
                     <td>{{ r.bonus_point_id }}</td>
                     <td><span class="badge bg-success">+{{ r.points }}</span></td>
-                    <td>{{ r.reason }}</td>
-                    <td>{{ r.date_awarded }}</td>
+                    <td>{{ r.month_col }}</td>
+                    <td>{{ r.year_col }}</td>
                     {% if role in ('Admin','HR Staff') %}
                     <td>{{ r.emp_name }}</td>
                     <td>

@@ -14,15 +14,15 @@
                         value="{{ record.points if record else '' }}">
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label fw-medium" for="date_awarded">Date Awarded</label>
-                    <input id="date_awarded" type="date" name="date_awarded" required class="form-control"
-                        value="{{ record.date_awarded if record else '' }}">
+                    <label class="form-label fw-medium" for="month_col">Month (1-12)</label>
+                    <input id="month_col" type="number" name="month_col" min="1" max="12" required class="form-control"
+                        value="{{ record.month_col if record else '' }}">
                 </div>
             </div>
             <div class="mb-3">
-                <label class="form-label fw-medium" for="reason">Reason</label>
-                <textarea id="reason" name="reason" required rows="3"
-                    class="form-control">{{ record.reason if record else '' }}</textarea>
+                <label class="form-label fw-medium" for="year_col">Year</label>
+                <input id="year_col" type="number" name="year_col" required class="form-control"
+                    value="{{ record.year_col if record else '' }}">
             </div>
             <div class="mb-4">
                 <label class="form-label fw-medium">Employee</label>

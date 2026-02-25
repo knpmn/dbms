@@ -13,7 +13,7 @@
 <div class="card border-0 shadow-sm">
     <div class="card-header bg-white border-bottom fw-semibold">Attendance Records</div>
     <div class="table-responsive">
-        <table class="data-table table table-hover mb-0" id="att-table">
+        <table class="table table-hover mb-0" id="att-table">
             <thead class="table-light">
                 <tr>
                     <th>#</th>
@@ -24,35 +24,81 @@
                 </tr>
             </thead>
             <tbody>
-                {% for r in records %}
-                <tr>
-                    <td>{{ r.attendance_id }}</td>
-                    <td>{{ r.date_col }}</td>
-                    <td>
-                        <span
-                            class="badge {% if r.status=='Present' %}bg-success{% elif r.status=='Absent' %}bg-danger{% else %}bg-primary{% endif %}">
-                            {{ r.status }}
-                        </span>
-                    </td>
-                    {% if role in ('Admin','HR Staff') %}
-                    <td>{{ r.emp_name }}</td>
-                    <td>
-                        <a href="{{ url_for('attendance.edit_attendance', att_id=r.attendance_id) }}"
-                            class="btn btn-sm btn-outline-primary py-0 px-2"><span class="material-icons"
-                                style="font-size:15px;vertical-align:-3px">edit</span></a>
-                        <form method="POST"
-                            action="{{ url_for('attendance.delete_attendance', att_id=r.attendance_id) }}"
-                            class="delete-form d-inline">
-                            <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2"><span
-                                    class="material-icons"
-                                    style="font-size:15px;vertical-align:-3px">delete</span></button>
-                        </form>
-                    </td>
-                    {% endif %}
-                </tr>
-                {% endfor %}
+                <!-- Populated by DataTables AJAX -->
             </tbody>
         </table>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const role = '{{ role }}';
+
+        // Columns configuration based on role
+        const columns = [
+            { data: 'attendance_id' },
+            { data: 'date_col' },
+            {
+                data: 'status',
+                render: function (data, type, row) {
+                    let badgeClass = 'bg-primary';
+                    if (data === 'Present') badgeClass = 'bg-success';
+                    else if (data === 'Absent') badgeClass = 'bg-danger';
+                    return `<span class="badge ${badgeClass}">${data}</span>`;
+                }
+            }
+        ];
+
+        if (role === 'Admin' || role === 'HR Staff') {
+            columns.push({ data: 'emp_name' });
+            columns.push({
+                data: null,
+                orderable: false,
+                searchable: false,
+                render: function (data, type, row) {
+                    const editUrl = `{{ url_for('attendance.list_attendance') }}${row.attendance_id}/edit`;
+                    const deleteUrl = `{{ url_for('attendance.list_attendance') }}${row.attendance_id}/delete`;
+
+                    return `
+                    <a href="${editUrl}" class="btn btn-sm btn-outline-primary py-0 px-2">
+                        <span class="material-icons" style="font-size:15px;vertical-align:-3px">edit</span>
+                    </a>
+                    <form method="POST" action="${deleteUrl}" class="delete-form d-inline">
+                        <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2">
+                            <span class="material-icons" style="font-size:15px;vertical-align:-3px">delete</span>
+                        </button>
+                    </form>
+                `;
+                }
+            });
+        }
+
+        // Initialize Server-Side DataTables
+        $('#att-table').DataTable({
+            serverSide: true,
+            processing: true,
+            ajax: {
+                url: '{{ url_for("attendance.list_attendance_api") }}',
+                type: 'GET'
+            },
+            columns: columns,
+            order: [[1, 'desc']], // Default order by date descending
+            language: {
+                search: '',
+                searchPlaceholder: 'Search...',
+                lengthMenu: '_MENU_',
+                processing: '<span class="material-icons rotating" style="color:#6f42c1; animation: spin 1s linear infinite;">sync</span> Loading...'
+            }
+        });
+    });
+</script>
+
+<style>
+    @keyframes spin {
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
 {% endblock %}

@@ -16,8 +16,7 @@
                 <tr>
                     <th>#</th>
                     <th>Name</th>
-                    <th>Min Salary</th>
-                    <th>Max Salary</th>
+                    <th>Base Salary</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -26,8 +25,7 @@
                 <tr>
                     <td>{{ p.position_id }}</td>
                     <td><strong>{{ p.position_name }}</strong></td>
-                    <td>{{ "{:,.0f}".format(p.min_salary) if p.min_salary else '—' }}</td>
-                    <td>{{ "{:,.0f}".format(p.max_salary) if p.max_salary else '—' }}</td>
+                    <td>{{ "{:,.0f}".format(p.base_salary) if p.base_salary else '—' }}</td>
                     <td>
                         <a href="{{ url_for('positions.edit_position', position_id=p.position_id) }}"
                             class="btn btn-sm btn-outline-primary py-0 px-2"><span class="material-icons"

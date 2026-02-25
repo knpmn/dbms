@@ -15,24 +15,100 @@ def _get_employees():
 @login_required
 def list_attendance():
     role = session.get('role')
-    if role in ('Admin', 'HR Staff'):
-        records = execute_query(
-            """SELECT a.attendance_id, TO_CHAR(a.date_col,'YYYY-MM-DD') AS date_col,
-                      a.status, e.first_name || ' ' || e.last_name AS emp_name, a.employee_id
-               FROM ATTENDANCE a JOIN EMPLOYEES e ON a.employee_id = e.employee_id
-               ORDER BY a.date_col DESC"""
-        )
+    return render_template('attendance/list.html', role=role)
+
+@att_bp.route('/api/data')
+@login_required
+def list_attendance_api():
+    role = session.get('role')
+    
+    # DataTables parameters
+    draw = int(request.args.get('draw', 1))
+    start = int(request.args.get('start', 0))
+    length = int(request.args.get('length', 10))
+    search_value = request.args.get('search[value]', '').strip()
+    order_col_idx = request.args.get('order[0][column]')
+    order_dir = request.args.get('order[0][dir]', 'asc')
+
+    # Mapping DataTables columns to SQL columns
+    columns_map = {
+        '0': 'a.attendance_id',
+        '1': 'a.date_col',
+        '2': 'a.status',
+        '3': 'e.first_name' # Used to sort by employee name
+    }
+    
+    order_col = columns_map.get(str(order_col_idx), 'a.date_col')
+    if order_dir not in ['asc', 'desc']:
+        order_dir = 'desc'
+
+    # Base query logic
+    base_query = """
+        FROM ATTENDANCE a 
+        JOIN EMPLOYEES e ON a.employee_id = e.employee_id
+    """
+    
+    where_clauses = []
+    binds = {}
+
+    # Role constraints
+    if role not in ('Admin', 'HR Staff'):
+        # Employee view: only their own records
+        where_clauses.append("a.employee_id = (SELECT employee_id FROM EMPLOYEES WHERE ROWNUM=1)")
+        # In a real app this would be: "a.employee_id = :session_emp_id"
+
+    # Search constraints
+    if search_value:
+        search_term = f"%{search_value.lower()}%"
+        where_clauses.append("(LOWER(a.status) LIKE :srch OR LOWER(e.first_name || ' ' || e.last_name) LIKE :srch OR TO_CHAR(a.date_col, 'YYYY-MM-DD') LIKE :srch)")
+        binds['srch'] = search_term
+
+    where_sql = ""
+    if where_clauses:
+        where_sql = "WHERE " + " AND ".join(where_clauses)
+
+    # 1. Total records (no filters)
+    total_query = f"SELECT COUNT(*) as c {base_query}"
+    if role not in ('Admin', 'HR Staff'):
+        total_records = execute_one(total_query + " WHERE a.employee_id = (SELECT employee_id FROM EMPLOYEES WHERE ROWNUM=1)")['c']
     else:
-        # Employee: own records only (linked via session user_id -> employee mapping)
-        records = execute_query(
-            """SELECT a.attendance_id, TO_CHAR(a.date_col,'YYYY-MM-DD') AS date_col, a.status, a.employee_id
-               FROM ATTENDANCE a
-               WHERE a.employee_id IN (
-                   SELECT employee_id FROM EMPLOYEES WHERE ROWNUM=1
-               )
-               ORDER BY a.date_col DESC""",
-        )
-    return render_template('attendance/list.html', records=records, role=role)
+        total_records = execute_one(total_query)['c']
+
+    # 2. Filtered records (with search)
+    filtered_query = f"SELECT COUNT(*) as c {base_query} {where_sql}"
+    filtered_records = execute_one(filtered_query, binds)['c']
+
+    # 3. Fetch data with pagination
+    data_query = f"""
+        SELECT a.attendance_id, TO_CHAR(a.date_col,'YYYY-MM-DD') AS date_col,
+               a.status, e.first_name || ' ' || e.last_name AS emp_name, a.employee_id
+        {base_query}
+        {where_sql}
+        ORDER BY {order_col} {order_dir}
+        OFFSET :start ROWS FETCH NEXT :length ROWS ONLY
+    """
+    binds['start'] = start
+    binds['length'] = length
+    
+    records = execute_query(data_query, binds)
+
+    # Format JSON response for DataTables
+    data = []
+    for r in records:
+        data.append({
+            'attendance_id': r['attendance_id'],
+            'date_col': r['date_col'],
+            'status': r['status'],
+            'emp_name': r['emp_name'],
+            'employee_id': r['employee_id']
+        })
+
+    return {
+        "draw": draw,
+        "recordsTotal": total_records,
+        "recordsFiltered": filtered_records,
+        "data": data
+    }
 
 
 @att_bp.route('/new', methods=['GET', 'POST'])

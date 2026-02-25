@@ -12,17 +12,10 @@
                 <input id="position_name" type="text" name="position_name" required class="form-control"
                     value="{{ pos.position_name if pos else '' }}">
             </div>
-            <div class="row g-3 mb-4">
-                <div class="col-md-6">
-                    <label class="form-label fw-medium" for="min_salary">Minimum Salary</label>
-                    <input id="min_salary" type="number" name="min_salary" step="0.01" class="form-control"
-                        value="{{ pos.min_salary if pos else '' }}">
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label fw-medium" for="max_salary">Maximum Salary</label>
-                    <input id="max_salary" type="number" name="max_salary" step="0.01" class="form-control"
-                        value="{{ pos.max_salary if pos else '' }}">
-                </div>
+            <div class="mb-4">
+                <label class="form-label fw-medium" for="base_salary">Base Salary</label>
+                <input id="base_salary" type="number" name="base_salary" step="0.01" required class="form-control"
+                    value="{{ pos.base_salary if pos else '' }}">
             </div>
             <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-sm px-3" style="background:#6f42c1;color:#fff">Save</button>
