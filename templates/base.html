@@ -175,38 +175,66 @@
                 }
 
                 div.dataTables_length {
-                        padding: 16px 0 0 16px;
+                        padding: 20px 0 0 20px;
                 }
 
                 div.dataTables_filter {
-                        padding: 16px 16px 0 0;
+                        padding: 20px 20px 0 0;
                 }
 
                 div.dataTables_info {
-                        padding: 16px 0 16px 16px;
+                        padding: 20px 0 20px 20px;
                         font-size: 14px;
                         color: #6c757d;
                 }
 
                 div.dataTables_paginate {
-                        padding: 10px 16px 16px 0;
+                        padding: 12px 20px 20px 0;
                         font-size: 14px;
                 }
 
-                div.dataTables_filter input,
+                /* Make the select dropdown look like Bootstrap form-select */
                 div.dataTables_length select {
-                        border: 1px solid #dee2e6;
-                        border-radius: 6px;
-                        padding: 5px 10px;
-                        font-size: 14px;
-                        outline: none;
+                        display: inline-block;
+                        width: auto;
+                        padding: .375rem 2.25rem .375rem .75rem;
+                        font-size: 1rem;
+                        font-weight: 400;
+                        line-height: 1.5;
+                        color: #212529;
                         background-color: #fff;
+                        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+                        background-repeat: no-repeat;
+                        background-position: right .75rem center;
+                        background-size: 16px 12px;
+                        border: 1px solid #ced4da;
+                        border-radius: .375rem;
+                        appearance: none;
+                        margin: 0 8px;
+                }
+
+                /* Make the search input look like Bootstrap form-control */
+                div.dataTables_filter input {
+                        display: inline-block;
+                        width: auto;
+                        padding: .375rem .75rem;
+                        font-size: 1rem;
+                        font-weight: 400;
+                        line-height: 1.5;
+                        color: #212529;
+                        background-color: #fff;
+                        background-clip: padding-box;
+                        border: 1px solid #ced4da;
+                        appearance: none;
+                        border-radius: .375rem;
+                        margin-left: 8px;
                 }
 
                 div.dataTables_filter input:focus,
                 div.dataTables_length select:focus {
                         border-color: #86b7fe;
-                        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+                        outline: 0;
+                        box-shadow: 0 0 0 .25rem rgba(13, 110, 253, .25);
                 }
 
                 .paginate_button {
