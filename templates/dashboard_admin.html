@@ -2,7 +2,7 @@
 {% block content %}
 <div class="d-flex align-items-center justify-content-between mb-4">
     <h1 class="h4 fw-bold mb-0 d-flex align-items-center gap-2">
-        <span class="material-icons text-purple">admin_panel_settings</span> Admin Dashboard
+        <span class="material-icons" style="color:#1a1a1a">admin_panel_settings</span> Admin Dashboard
     </h1>
 </div>
 <p class="text-muted mb-4">Welcome, <strong>{{ session.username }}</strong>. You have full system access.</p>
@@ -13,8 +13,14 @@
     ('badge','#333333','Total Roles', stats.roles),
     ('people','#333333','Employees', stats.employees),
     ('business','#333333','Departments', stats.departments),
+    ('account_tree', '#333333', 'Positions', stats.positions),
+    ('event_available', '#333333', 'Attendance', stats.attendance),
+    ('star', '#333333', 'Bonus Points', stats.bonus_points),
+    ('emoji_events', '#333333', 'Yearly Bonus', stats.yearly_bonus),
+    ('warning', '#333333', 'Penalties', stats.penalties),
+    ('description', '#333333', 'BP Log', stats.bp_log),
     ] %}
-    <div class="col-6 col-xl-3">
+    <div class="col-6 col-md-4 col-xl-3">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-body d-flex align-items-center gap-3">
                 <div class="rounded-3 p-2" style="background:{{ color }}22">

@@ -53,7 +53,13 @@ def dashboard():
             'users': execute_one("SELECT COUNT(*) AS c FROM USERS")['c'],
             'roles': execute_one("SELECT COUNT(*) AS c FROM ROLES")['c'],
             'employees': execute_one("SELECT COUNT(*) AS c FROM EMPLOYEES")['c'],
-            'departments': execute_one("SELECT COUNT(*) AS c FROM DEPARTMENTS")['c']
+            'departments': execute_one("SELECT COUNT(*) AS c FROM DEPARTMENTS")['c'],
+            'positions': execute_one("SELECT COUNT(*) AS c FROM POSITIONS")['c'],
+            'attendance': execute_one("SELECT COUNT(*) AS c FROM ATTENDANCE")['c'],
+            'bonus_points': execute_one("SELECT COUNT(*) AS c FROM BONUS_POINTS")['c'],
+            'yearly_bonus': execute_one("SELECT COUNT(*) AS c FROM YEARLY_BONUS")['c'],
+            'penalties': execute_one("SELECT COUNT(*) AS c FROM PENALTIES")['c'],
+            'bp_log': execute_one("SELECT COUNT(*) AS c FROM BP_LOG")['c']
         }
         dept_data = execute_query("""
             SELECT d.department_name, (SELECT COUNT(*) FROM EMPLOYEES e WHERE e.department_id = d.department_id) as emp_count
@@ -63,10 +69,16 @@ def dashboard():
         
     elif role == 'HR Staff':
         stats = {
+            'users': execute_one("SELECT COUNT(*) AS c FROM USERS")['c'],
+            'roles': execute_one("SELECT COUNT(*) AS c FROM ROLES")['c'],
             'employees': execute_one("SELECT COUNT(*) AS c FROM EMPLOYEES")['c'],
             'departments': execute_one("SELECT COUNT(*) AS c FROM DEPARTMENTS")['c'],
             'positions': execute_one("SELECT COUNT(*) AS c FROM POSITIONS")['c'],
-            'penalties': execute_one("SELECT COUNT(*) AS c FROM PENALTIES")['c']
+            'attendance': execute_one("SELECT COUNT(*) AS c FROM ATTENDANCE")['c'],
+            'bonus_points': execute_one("SELECT COUNT(*) AS c FROM BONUS_POINTS")['c'],
+            'yearly_bonus': execute_one("SELECT COUNT(*) AS c FROM YEARLY_BONUS")['c'],
+            'penalties': execute_one("SELECT COUNT(*) AS c FROM PENALTIES")['c'],
+            'bp_log': execute_one("SELECT COUNT(*) AS c FROM BP_LOG")['c']
         }
         dept_data = execute_query("""
             SELECT d.department_name, (SELECT COUNT(*) FROM EMPLOYEES e WHERE e.department_id = d.department_id) as emp_count
