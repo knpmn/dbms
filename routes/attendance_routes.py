@@ -85,10 +85,10 @@ def list_attendance_api():
         {base_query}
         {where_sql}
         ORDER BY {order_col} {order_dir}
-        OFFSET :start ROWS FETCH NEXT :length ROWS ONLY
+        OFFSET :v_offset ROWS FETCH NEXT :v_limit ROWS ONLY
     """
-    binds['start'] = start
-    binds['length'] = length
+    binds['v_offset'] = start
+    binds['v_limit'] = length
     
     records = execute_query(data_query, binds)
 
