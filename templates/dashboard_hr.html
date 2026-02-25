@@ -6,17 +6,17 @@
 <p class="text-muted mb-4">Welcome, <strong>{{ session.username }}</strong>. Accessing personnel management suite.</p>
 
 <div class="row g-3 mb-4">
-    {% for icon, color, label, val in [
-    ('people','#333333','Employees', stats.employees),
-    ('business','#333333','Departments', stats.departments),
-    ('account_tree','#333333','Positions', stats.positions),
-    ('event_available', '#333333', 'Attendance', stats.attendance),
-    ('star', '#333333', 'Bonus Points', stats.bonus_points),
-    ('emoji_events', '#333333', 'Yearly Bonus', stats.yearly_bonus),
-    ('warning','#333333','Penalties', stats.penalties),
-    ('description', '#333333', 'BP Log', stats.bp_log),
-    ('manage_accounts','#333333','Total Users', stats.users),
-    ('badge','#333333','Total Roles', stats.roles),
+    {% for icon, color, label, val, unit in [
+    ('people','#333333','Employees', stats.employees, 'People'),
+    ('business','#333333','Departments', stats.departments, 'Units'),
+    ('account_tree','#333333','Positions', stats.positions, 'Titles'),
+    ('event_available', '#333333', 'Attendance', stats.attendance, 'Records'),
+    ('star', '#333333', 'Bonus Points', stats.bonus_points, 'Awards'),
+    ('emoji_events', '#333333', 'Yearly Bonus', stats.yearly_bonus, 'Reports'),
+    ('warning','#333333','Penalties', stats.penalties, 'Cases'),
+    ('description', '#333333', 'BP Log', stats.bp_log, 'Entries'),
+    ('manage_accounts','#333333','Total Users', stats.users, 'Users'),
+    ('badge','#333333','Total Roles', stats.roles, 'Roles'),
     ] %}
     <div class="col-6 col-md-4 col-xl-3">
         <div class="card border-0 shadow-sm">
@@ -28,7 +28,10 @@
                     <div class="text-muted"
                         style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em">{{ label }}
                     </div>
-                    <div class="fw-bold" style="font-size:26px">{{ val }}</div>
+                    <div class="d-flex align-items-baseline gap-1">
+                        <div class="fw-bold" style="font-size:26px">{{ val }}</div>
+                        <div class="text-muted small" style="font-size:12px">{{ unit }}</div>
+                    </div>
                 </div>
             </div>
         </div>
