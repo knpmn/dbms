@@ -8,7 +8,7 @@
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css" rel="stylesheet">
+        <link href="https://cdn.datatables.net/2.0.8/css/dataTables.bootstrap5.min.css" rel="stylesheet">
         <style>
                 body {
                         font-family: 'Roboto', sans-serif;
@@ -169,98 +169,6 @@
                         min-height: 100vh;
                 }
 
-                /* DataTables tweaks */
-                div.dataTables_wrapper {
-                        padding: 0;
-                }
-
-                div.dataTables_length {
-                        padding: 20px 0 0 20px;
-                }
-
-                div.dataTables_filter {
-                        padding: 20px 20px 0 0;
-                }
-
-                div.dataTables_info {
-                        padding: 20px 0 20px 20px;
-                        font-size: 14px;
-                        color: #6c757d;
-                }
-
-                div.dataTables_paginate {
-                        padding: 12px 20px 20px 0;
-                        font-size: 14px;
-                }
-
-                /* Make the select dropdown look like Bootstrap form-select */
-                div.dataTables_length select {
-                        display: inline-block;
-                        width: auto;
-                        padding: .375rem 2.25rem .375rem .75rem;
-                        font-size: 1rem;
-                        font-weight: 400;
-                        line-height: 1.5;
-                        color: #212529;
-                        background-color: #fff;
-                        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
-                        background-repeat: no-repeat;
-                        background-position: right .75rem center;
-                        background-size: 16px 12px;
-                        border: 1px solid #ced4da;
-                        border-radius: .375rem;
-                        appearance: none;
-                        margin: 0 8px;
-                }
-
-                /* Make the search input look like Bootstrap form-control */
-                div.dataTables_filter input {
-                        display: inline-block;
-                        width: auto;
-                        padding: .375rem .75rem;
-                        font-size: 1rem;
-                        font-weight: 400;
-                        line-height: 1.5;
-                        color: #212529;
-                        background-color: #fff;
-                        background-clip: padding-box;
-                        border: 1px solid #ced4da;
-                        appearance: none;
-                        border-radius: .375rem;
-                        margin-left: 8px;
-                }
-
-                div.dataTables_filter input:focus,
-                div.dataTables_length select:focus {
-                        border-color: #86b7fe;
-                        outline: 0;
-                        box-shadow: 0 0 0 .25rem rgba(13, 110, 253, .25);
-                }
-
-                .paginate_button {
-                        cursor: pointer;
-                        padding: 6px 12px;
-                        border-radius: 6px;
-                        margin-left: 4px;
-                        border: 1px solid transparent;
-                }
-
-                .paginate_button.current {
-                        background: #0d6efd !important;
-                        color: #fff !important;
-                        border-color: #0d6efd;
-                }
-
-                .paginate_button:hover:not(.current):not(.disabled) {
-                        background: #e9ecef !important;
-                        border-color: #dee2e6;
-                }
-
-                .paginate_button.disabled {
-                        opacity: .5;
-                        cursor: default;
-                }
-
                 /* Delete modal */
                 #deleteModal {
                         display: none;
@@ -277,20 +185,37 @@
                         display: flex;
                 }
 
-                /* Mobile Toggle Button */
-                .menu-btn {
+                /* Mobile Header */
+                .mobile-header {
                         display: none;
+                        padding: 15px 24px;
+                        background: #fff;
+                        border-bottom: 1px solid #dee2e6;
+                        align-items: center;
+                        gap: 15px;
+                }
+
+                .mobile-header .menu-btn {
                         background: transparent;
                         border: none;
-                        color: #fff;
+                        color: #212529;
                         padding: 0;
                         cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                }
+
+                .mobile-header .page-title {
+                        font-weight: 600;
+                        font-size: 18px;
+                        margin: 0;
+                        flex: 1;
                 }
 
                 /* Mobile Layout */
                 @media (max-width: 768px) {
-                        .menu-btn {
-                                display: block;
+                        .mobile-header {
+                                display: flex;
                         }
 
                         #sidebar {
@@ -299,8 +224,8 @@
                         }
 
                         #main {
-                                left: 0;
                                 margin-left: 0;
+                                padding: 15px;
                         }
 
                         body.sidebar-open #sidebar {
@@ -419,10 +344,13 @@
 
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-        <button class="menu-btn" id="mobileMenuBtn"
-                style="position:fixed; top:20px; right:20px; z-index:1050; background:#6f42c1; color:white; border-radius:8px; padding:6px; box-shadow:0 2px 5px rgba(0,0,0,0.2);">
-                <span class="material-icons" style="font-size:24px; display:block;">menu</span>
-        </button>
+        <!-- Mobile Header -->
+        <div class="mobile-header">
+                <button class="menu-btn" id="mobileMenuBtn">
+                        <span class="material-icons">menu</span>
+                </button>
+                <h1 class="page-title" id="pageTitleMobile">Smart HR System</h1>
+        </div>
 
         <!-- Main content -->
         <div id="main">
@@ -452,6 +380,7 @@
         <!-- Scripts -->
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
         <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/2.0.8/js/dataTables.bootstrap5.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -474,24 +403,29 @@
                                 });
                         }
 
-                        // Initialize DataTables
+                        // DataTables
                         document.querySelectorAll('.data-table').forEach(function (el) {
                                 if (!$.fn.DataTable.isDataTable(el)) {
                                         $(el).DataTable({
                                                 pageLength: 10,
                                                 language: {
-                                                        search: '', searchPlaceholder: 'Search...',
-                                                        lengthMenu: 'Show _MENU_',
-                                                        info: '_START_ - _END_ of _TOTAL_ records',
+                                                        search: '', searchPlaceholder: 'Search…'
                                                 },
-                                                order: [],
-                                                // Disable DataTables default border spacing injection
-                                                classes: {
-                                                        sTable: 'dataTable table table-hover mb-0'
-                                                }
+                                                order: []
                                         });
                                 }
                         });
+
+                        // Page title for mobile header
+                        var heading = document.querySelector('h1') || document.querySelector('h2');
+                        if (heading) {
+                                var title = Array.from(heading.childNodes)
+                                        .filter(function (n) { return n.nodeType === Node.TEXT_NODE; })
+                                        .map(function (n) { return n.textContent; })
+                                        .join('').trim();
+                                var el = document.getElementById('pageTitleMobile');
+                                if (el) el.textContent = title || heading.textContent.trim();
+                        }
 
                         // Delete confirmation with SweetAlert2
                         document.querySelectorAll('.delete-form').forEach(function (form) {
