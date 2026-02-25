@@ -162,6 +162,37 @@
                         font-size: 18px;
                 }
 
+                /* DataTables Custom Polish */
+                .dt-container {
+                        padding: 0 1.5rem 1rem 1.5rem;
+                }
+
+                .dt-info {
+                        font-size: 13px;
+                        color: #6c757d;
+                        padding-top: 0.85em;
+                }
+
+                .page-item.active .page-link {
+                        background-color: #6f42c1;
+                        border-color: #6f42c1;
+                        color: white !important;
+                }
+
+                .page-link {
+                        color: #6f42c1;
+                }
+
+                .page-link:hover {
+                        color: #5a32a3;
+                }
+
+                @media (max-width: 768px) {
+                        .dt-container {
+                                padding: 0 1rem 1rem 1rem;
+                        }
+                }
+
                 /* Main */
                 #main {
                         margin-left: 240px;
@@ -409,7 +440,8 @@
                                         $(el).DataTable({
                                                 pageLength: 10,
                                                 language: {
-                                                        search: '', searchPlaceholder: 'Search…'
+                                                        search: '', searchPlaceholder: 'Search…',
+                                                        lengthMenu: '_MENU_'
                                                 },
                                                 order: []
                                         });
