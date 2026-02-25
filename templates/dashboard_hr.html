@@ -40,34 +40,7 @@
 </div>
 
 <div class="row g-3">
-    <div class="col-12 col-xl-6">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-header bg-white border-bottom fw-semibold">Management Modules</div>
-            <div class="card-body">
-                <div class="row g-2">
-                    {% for ep, icon, label in [
-                    ('employees.list_employees','people','Employees'),
-                    ('departments.list_departments','business','Departments'),
-                    ('positions.list_positions','account_tree','Positions'),
-                    ('attendance.list_attendance','event_available','Attendance'),
-                    ('bonus_points.list_bonus_points','star','Bonus Points'),
-                    ('yearly_bonus.list_yearly_bonus','emoji_events','Yearly Bonus'),
-                    ('penalties.list_penalties','warning','Penalties'),
-                    ('bp.list_bp','description','B&P Log'),
-                    ] %}
-                    <div class="col-6">
-                        <a href="{{ url_for(ep) }}"
-                            class="btn btn-outline-secondary btn-sm w-100 text-start d-flex align-items-center gap-2">
-                            <span class="material-icons-outlined" style="font-size:18px;color:#1a1a1a">{{ icon }}</span>
-                            {{ label }}
-                        </a>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-12 col-xl-6">
+    <div class="col-12">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-header bg-white border-bottom fw-semibold">Personnel Distribution</div>
             <div class="card-body">
