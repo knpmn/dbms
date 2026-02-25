@@ -2,7 +2,7 @@
 {% block content %}
 <div class="d-flex align-items-center justify-content-between mb-4">
     <h1 class="h4 fw-bold mb-0 d-flex align-items-center gap-2">
-        <span class="material-icons text-danger">warning</span> Penalties
+        <span class="material-icons" style="color:#1a1a1a">warning</span> Penalties
     </h1>
     {% if role in ('Admin','HR Staff') %}
     <a href="{{ url_for('penalties.create_penalty') }}" class="btn btn-sm" style="background:#1a1a1a;color:#fff">
