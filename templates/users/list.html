@@ -2,9 +2,9 @@
 {% block content %}
 <div class="d-flex align-items-center justify-content-between mb-4">
     <h1 class="h4 fw-bold mb-0 d-flex align-items-center gap-2">
-        <span class="material-icons" style="color:#6f42c1">manage_accounts</span> Users
+        <span class="material-icons" style="color:#1a1a1a">manage_accounts</span> Users
     </h1>
-    <a href="{{ url_for('users.create_user') }}" class="btn btn-sm" style="background:#6f42c1;color:#fff">
+    <a href="{{ url_for('users.create_user') }}" class="btn btn-sm" style="background:#1a1a1a;color:#fff">
         <span class="material-icons" style="font-size:16px;vertical-align:-3px">add</span> Add User
     </a>
 </div>
@@ -17,7 +17,7 @@
                     <th>#</th>
                     <th>Username</th>
                     <th>Role</th>
-                    <th>Employee</th>
+                    <th>Email</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -27,7 +27,7 @@
                     <td>{{ u.user_id }}</td>
                     <td><strong>{{ u.username }}</strong></td>
                     <td><span class="badge" style="background:#6f42c1">{{ u.role_name }}</span></td>
-                    <td>{{ u.emp_name or '—' }}</td>
+                    <td>{{ u.email }}</td>
                     <td>
                         <a href="{{ url_for('users.edit_user', user_id=u.user_id) }}"
                             class="btn btn-sm btn-outline-primary py-0 px-2"><span class="material-icons"

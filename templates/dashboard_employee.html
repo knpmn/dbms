@@ -1,15 +1,15 @@
 {% extends 'base.html' %}
 {% block content %}
 <h1 class="h4 fw-bold mb-1 d-flex align-items-center gap-2">
-    <span class="material-icons" style="color:#6f42c1">person</span> Employee Dashboard
+    <span class="material-icons" style="color:#1a1a1a">person</span> Employee Dashboard
 </h1>
 <p class="text-muted mb-4">Welcome, <strong>{{ session.username }}</strong>. View your personal records below.</p>
 
 <div class="row g-3 mb-4">
     {% for icon, color, label, val in [
-    ('event_available','#0d6efd','Attendance Records', stats.attendance),
-    ('star','#6f42c1','Bonus Points', stats.bonus),
-    ('warning','#dc3545','Active Penalties', stats.penalties),
+    ('event_available','#333333','Attendance Records', stats.attendance),
+    ('star','#333333','Bonus Points', stats.bonus),
+    ('warning','#333333','Active Penalties', stats.penalties),
     ] %}
     <div class="col-12 col-md-4">
         <div class="card border-0 shadow-sm">
@@ -43,7 +43,7 @@
             <div class="col-6 col-md-4">
                 <a href="{{ url_for(ep) }}"
                     class="btn btn-outline-secondary btn-sm w-100 text-start d-flex align-items-center gap-2">
-                    <span class="material-icons-outlined" style="font-size:18px;color:#6f42c1">{{ icon }}</span> {{
+                    <span class="material-icons-outlined" style="font-size:18px;color:#1a1a1a">{{ icon }}</span> {{
                     label }}
                 </a>
             </div>

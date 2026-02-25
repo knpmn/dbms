@@ -2,11 +2,11 @@
 {% block content %}
 <div class="d-flex align-items-center justify-content-between mb-4">
     <h1 class="h4 fw-bold mb-0 d-flex align-items-center gap-2">
-        <span class="material-icons" style="color:#6f42c1">emoji_events</span> Yearly Bonus
+        <span class="material-icons" style="color:#1a1a1a">emoji_events</span> Yearly Bonus
     </h1>
     {% if role in ('Admin','HR Staff') %}
     <a href="{{ url_for('yearly_bonus.create_yearly_bonus') }}" class="btn btn-sm"
-        style="background:#6f42c1;color:#fff">
+        style="background:#1a1a1a;color:#fff">
         <span class="material-icons" style="font-size:16px;vertical-align:-3px">add</span> Add Yearly Bonus
     </a>
     {% endif %}

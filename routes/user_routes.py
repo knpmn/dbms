@@ -33,9 +33,9 @@ def create_user():
         employee_id = int(employee_id) if employee_id else None
 
         dml(
-            """INSERT INTO USERS (username, password, email, role_id, employee_id)
-               VALUES (:username, :password, :email, :role_id, :employee_id)""",
-            {'username': username, 'password': password, 'email': email, 'role_id': role_id, 'employee_id': employee_id},
+            """INSERT INTO USERS (username, password, email, role_id)
+               VALUES (:username, :password, :email, :role_id)""",
+            {'username': username, 'password': password, 'email': email, 'role_id': role_id},
             fetch=False
         )
         flash('User created successfully.', 'success')
@@ -64,15 +64,15 @@ def edit_user(user_id):
         
         if new_pw:
             dml(
-                """UPDATE USERS SET username=:u, email=:e, role_id=:r, employee_id=:emp, password=:p
+                """UPDATE USERS SET username=:u, email=:e, role_id=:r, password=:p
                    WHERE user_id=:id""",
-                {'u': username, 'e': email, 'r': role_id, 'emp': employee_id, 'p': hash_password(new_pw), 'id': user_id},
+                {'u': username, 'e': email, 'r': role_id, 'p': hash_password(new_pw), 'id': user_id},
                 fetch=False
             )
         else:
             dml(
-                "UPDATE USERS SET username=:u, email=:e, role_id=:r, employee_id=:emp WHERE user_id=:id",
-                {'u': username, 'e': email, 'r': role_id, 'emp': employee_id, 'id': user_id},
+                "UPDATE USERS SET username=:u, email=:e, role_id=:r WHERE user_id=:id",
+                {'u': username, 'e': email, 'r': role_id, 'id': user_id},
                 fetch=False
             )
         flash('User updated.', 'success')

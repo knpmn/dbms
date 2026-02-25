@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <h2 class="h5 fw-bold mb-4 d-flex align-items-center gap-2">
-    <span class="material-icons" style="color:#6f42c1">{{ 'edit' if record else 'add_alert' }}</span>
+    <span class="material-icons" style="color:#1a1a1a">{{ 'edit' if record else 'add_alert' }}</span>
     {{ 'Edit Penalty' if record else 'New Penalty' }}
 </h2>
 <div class="card border-0 shadow-sm" style="max-width:560px">
@@ -38,7 +38,7 @@
                 </select>
             </div>
             <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-sm px-3" style="background:#6f42c1;color:#fff">Save</button>
+                <button type="submit" class="btn btn-sm px-3" style="background:#1a1a1a;color:#fff">Save</button>
                 <a href="{{ url_for('penalties.list_penalties') }}"
                     class="btn btn-sm btn-outline-secondary px-3">Cancel</a>
             </div>

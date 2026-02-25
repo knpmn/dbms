@@ -2,10 +2,10 @@
 {% block content %}
 <div class="d-flex align-items-center justify-content-between mb-4">
     <h1 class="h4 fw-bold mb-0 d-flex align-items-center gap-2">
-        <span class="material-icons" style="color:#6f42c1">event_available</span> Attendance Records
+        <span class="material-icons" style="color:#1a1a1a">event_available</span> Attendance Records
     </h1>
     {% if role in ('Admin','HR Staff') %}
-    <a href="{{ url_for('attendance.create_attendance') }}" class="btn btn-sm" style="background:#6f42c1;color:#fff">
+    <a href="{{ url_for('attendance.create_attendance') }}" class="btn btn-sm" style="background:#1a1a1a;color:#fff">
         <span class="material-icons" style="font-size:16px;vertical-align:-3px">add</span> Add Record
     </a>
     {% endif %}
@@ -87,7 +87,7 @@
                 search: '',
                 searchPlaceholder: 'Search...',
                 lengthMenu: '_MENU_',
-                processing: '<span class="material-icons rotating" style="color:#6f42c1; animation: spin 1s linear infinite;">sync</span> Loading...'
+                processing: '<span class="material-icons rotating" style="color:#1a1a1a; animation: spin 1s linear infinite;">sync</span> Loading...'
             }
         });
     });

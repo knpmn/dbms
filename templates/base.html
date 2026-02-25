@@ -12,7 +12,7 @@
         <style>
                 body {
                         font-family: 'Roboto', sans-serif;
-                        background: #f0f2f5;
+                        background: #f0f0f0;
                 }
 
                 /* Sidebar */
@@ -22,7 +22,7 @@
                         left: 0;
                         bottom: 0;
                         width: 240px;
-                        background: #212529;
+                        background: #1a1a1a;
                         z-index: 1040;
                         display: flex;
                         flex-direction: column;
@@ -30,7 +30,7 @@
                 }
 
                 #sidebar .sidebar-brand {
-                        background: #6f42c1;
+                        background: #111111;
                         padding: 16px;
                         display: flex;
                         align-items: center;
@@ -91,7 +91,7 @@
                 }
 
                 #sidebar .nav-link.active {
-                        background: #6f42c1;
+                        background: #3a3a3a;
                         color: #fff;
                         font-weight: 500;
                 }
@@ -116,7 +116,7 @@
                         width: 32px;
                         height: 32px;
                         border-radius: 50%;
-                        background: #6f42c1;
+                        background: #3a3a3a;
                         display: flex;
                         align-items: center;
                         justify-content: center;
@@ -148,14 +148,14 @@
                         gap: 8px;
                         padding: 8px 10px;
                         border-radius: 8px;
-                        color: #f08080;
+                        color: #aaaaaa;
                         font-size: 13px;
                         text-decoration: none;
                 }
 
                 #sidebar .logout-link:hover {
-                        background: rgba(220, 53, 69, .15);
-                        color: #f08080;
+                        background: rgba(255, 255, 255, .08);
+                        color: #ffffff;
                 }
 
                 #sidebar .logout-link .material-icons {
@@ -174,26 +174,68 @@
                 }
 
                 .dt-paging .pagination .page-item.active .page-link {
-                        background-color: #6f42c1 !important;
-                        border-color: #6f42c1 !important;
+                        background-color: #1a1a1a !important;
+                        border-color: #1a1a1a !important;
                         color: white !important;
                 }
 
                 .dt-paging .pagination .page-link {
-                        color: #6f42c1;
+                        color: #1a1a1a;
                         padding: 0.35rem 0.75rem;
                         font-size: 0.85rem;
                         box-shadow: none !important;
                 }
 
                 .dt-paging .pagination .page-link:hover {
-                        color: #5a32a3;
-                        background-color: #f8f9fa;
+                        color: #000000;
+                        background-color: #e8e8e8;
                 }
 
                 @media (max-width: 768px) {
                         .dt-container {
-                                padding: 0 1rem 1rem 1rem;
+                                padding: 0 0.5rem 1rem 0.5rem;
+                        }
+
+                        /* Force DataTables top controls (length + search) onto one row */
+                        .dt-layout-row:first-child {
+                                display: flex !important;
+                                flex-direction: row !important;
+                                align-items: center !important;
+                                justify-content: space-between !important;
+                                flex-wrap: nowrap !important;
+                                gap: 0.25rem;
+                                margin-bottom: 0.5rem;
+                        }
+
+                        .dt-layout-cell.dt-start {
+                                text-align: left !important;
+                                flex: 0 1 auto !important;
+                                display: flex !important;
+                                align-items: center !important;
+                        }
+
+                        .dt-layout-cell.dt-end {
+                                text-align: right !important;
+                                flex: 0 1 auto !important;
+                                display: flex !important;
+                                align-items: center !important;
+                                justify-content: flex-end !important;
+                        }
+
+                        /* Shorten search box on mobile */
+                        .dt-search input {
+                                width: 100px !important;
+                                margin-left: 0.25rem !important;
+                        }
+
+                        /* Ensure length select is compact */
+                        .dt-length select {
+                                padding: 0.25rem 1.5rem 0.25rem 0.5rem !important;
+                                margin-right: 0.25rem !important;
+                        }
+
+                        .dt-layout-cell.dt-full {
+                                flex: 1 1 auto;
                         }
                 }
 
