@@ -39,12 +39,96 @@
     {% endfor %}
 </div>
 
-<div class="row g-3">
-    <div class="col-12">
+<div class="row g-3 mb-4">
+    <div class="col-12 col-xl-8">
         <div class="card border-0 shadow-sm h-100">
-            <div class="card-header bg-white border-bottom fw-semibold">Personnel Distribution</div>
+            <div class="card-header bg-white border-bottom fw-semibold">Allocation & Salary Insights</div>
             <div class="card-body">
-                <div style="position:relative;min-height:220px"><canvas id="deptChartHR"></canvas></div>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="small text-muted mb-2 text-center">Personnel Distribution</div>
+                        <div style="position:relative;min-height:220px"><canvas id="deptChartHR"></canvas></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="small text-muted mb-2 text-center">Salary Expenditure by Dept</div>
+                        <div style="position:relative;min-height:220px"><canvas id="salaryChartHR"></canvas></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-xl-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-bottom fw-semibold">Daily Presence Summary</div>
+            <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                <div style="position:relative;width:100%;max-width:200px"><canvas id="attendanceChartHR"></canvas></div>
+                {% if not attendance_today %}
+                <p class="text-muted small mt-3 mb-0">No attendance records today.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-12 col-xl-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-bottom fw-semibold">Recent HR Activity</div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    {% for act in recent_activity %}
+                    <div class="list-group-item border-0 py-2">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center bg-light"
+                                style="width:32px;height:32px">
+                                <span class="material-icons" style="font-size:16px;color:#1a1a1a">
+                                    {{ 'star' if act.type_col == 'Bonus' else 'warning_amber' }}
+                                </span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="small fw-semibold">{{ act.first_name }} {{ act.last_name }}</div>
+                                <div class="text-muted" style="font-size:11px">
+                                    {{ act.type_col }} recorded
+                                </div>
+                            </div>
+                            <div class="text-muted" style="font-size:10px">{{ act.created_date.strftime('%H:%M') if
+                                act.created_date else '' }}</div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="p-4 text-center text-muted small">No recent activity.</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-xl-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-bottom fw-semibold">Top Performers Hub</div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0" style="font-size:13px">
+                        <thead>
+                            <tr class="table-light">
+                                <th class="border-0">Employee</th>
+                                <th class="border-0 text-end">Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for top in top_performers %}
+                            <tr>
+                                <td class="py-2"><strong>{{ top.first_name }} {{ top.last_name }}</strong></td>
+                                <td class="py-2 text-end"><span class="badge bg-dark text-white">{{
+                                        "{:,.1f}".format(top.yearly_bonus_score) }}</span></td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="2" class="p-4 text-center text-muted small">No metrics available.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -53,11 +137,84 @@
 {% block extra_js %}
 <script>
     (function () {
-        var ctx = document.getElementById('deptChartHR'); if (!ctx) return;
-        var d = {{ dept_data| tojson | safe
-    }};
-    new Chart(ctx, { type: 'pie', data: { labels: d.map(x => x.department_name), datasets: [{ data: d.map(x => x.emp_count), backgroundColor: ['#111111', '#333333', '#555555', '#777777', '#999999', '#bbbbbb'], borderWidth: 2, borderColor: '#fff' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 14, font: { size: 12 } } } } } });
-}) ();
+        // 1. Personnel Distribution (Pie)
+        var ctxDept = document.getElementById('deptChartHR');
+        if (ctxDept) {
+            var d = {{ dept_data | tojson | safe }};
+    new Chart(ctxDept, {
+        type: 'pie',
+        data: {
+            labels: d.map(x => x.department_name),
+            datasets: [{
+                data: d.map(x => x.emp_count),
+                backgroundColor: ['#111', '#333', '#555', '#777', '#999', '#bbb'],
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'right', labels: { boxWidth: 12, font: { size: 10 } } }
+            }
+        }
+    });
+        }
+
+    // 2. Salary Expenditure (Bar)
+    var ctxSalary = document.getElementById('salaryChartHR');
+    if (ctxSalary) {
+        var s = {{ salary_data | tojson | safe }};
+    new Chart(ctxSalary, {
+        type: 'bar',
+        data: {
+            labels: s.map(x => x.department_name),
+            datasets: [{
+                label: 'Salary',
+                data: s.map(x => x.total_salary),
+                backgroundColor: '#444',
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, ticks: { font: { size: 10 } } },
+                x: { grid: { display: false }, ticks: { font: { size: 10 } } }
+            }
+        }
+    });
+        }
+
+    // 3. Presence Hub (Doughnut)
+    var ctxAtt = document.getElementById('attendanceChartHR');
+    if (ctxAtt) {
+        var a = {{ attendance_today | tojson | safe }};
+    new Chart(ctxAtt, {
+        type: 'doughnut',
+        data: {
+            labels: a.map(x => x.status),
+            datasets: [{
+                data: a.map(x => x.count),
+                backgroundColor: ['#111', '#333', '#666', '#999'],
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '70%',
+            plugins: {
+                legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } }
+            }
+        }
+    });
+        }
+    }) ();
 </script>
 {% endblock %}
 {% endblock %}

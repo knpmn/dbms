@@ -65,7 +65,32 @@ def dashboard():
             SELECT d.department_name, (SELECT COUNT(*) FROM EMPLOYEES e WHERE e.department_id = d.department_id) as emp_count
             FROM DEPARTMENTS d
         """)
-        return render_template('dashboard_admin.html', stats=stats, dept_data=dept_data)
+        recent_activity = execute_query("""
+            SELECT * FROM (
+                SELECT b.type_col, b.created_date, e.first_name, e.last_name 
+                FROM BP b JOIN EMPLOYEES e ON b.employee_id = e.employee_id 
+                ORDER BY b.created_date DESC
+            ) WHERE ROWNUM <= 10
+        """)
+        top_performers = execute_query("""
+            SELECT * FROM (
+                SELECT e.first_name, e.last_name, y.yearly_bonus_score 
+                FROM YEARLY_BONUS y JOIN EMPLOYEES e ON y.employee_id = e.employee_id 
+                ORDER BY y.yearly_bonus_score DESC
+            ) WHERE ROWNUM <= 5
+        """)
+        attendance_today = execute_query("""
+            SELECT status, COUNT(*) as count FROM ATTENDANCE 
+            WHERE TRUNC(date_col) = TRUNC(SYSDATE) GROUP BY status
+        """)
+        salary_data = execute_query("""
+            SELECT d.department_name, NVL(SUM(e.salary), 0) as total_salary 
+            FROM DEPARTMENTS d LEFT JOIN EMPLOYEES e ON d.department_id = e.department_id 
+            GROUP BY d.department_name
+        """)
+        return render_template('dashboard_admin.html', stats=stats, dept_data=dept_data, 
+                               recent_activity=recent_activity, top_performers=top_performers,
+                               attendance_today=attendance_today, salary_data=salary_data)
         
     elif role == 'HR Staff':
         stats = {
@@ -84,7 +109,32 @@ def dashboard():
             SELECT d.department_name, (SELECT COUNT(*) FROM EMPLOYEES e WHERE e.department_id = d.department_id) as emp_count
             FROM DEPARTMENTS d
         """)
-        return render_template('dashboard_hr.html', stats=stats, dept_data=dept_data)
+        recent_activity = execute_query("""
+            SELECT * FROM (
+                SELECT b.type_col, b.created_date, e.first_name, e.last_name 
+                FROM BP b JOIN EMPLOYEES e ON b.employee_id = e.employee_id 
+                ORDER BY b.created_date DESC
+            ) WHERE ROWNUM <= 10
+        """)
+        top_performers = execute_query("""
+            SELECT * FROM (
+                SELECT e.first_name, e.last_name, y.yearly_bonus_score 
+                FROM YEARLY_BONUS y JOIN EMPLOYEES e ON y.employee_id = e.employee_id 
+                ORDER BY y.yearly_bonus_score DESC
+            ) WHERE ROWNUM <= 5
+        """)
+        attendance_today = execute_query("""
+            SELECT status, COUNT(*) as count FROM ATTENDANCE 
+            WHERE TRUNC(date_col) = TRUNC(SYSDATE) GROUP BY status
+        """)
+        salary_data = execute_query("""
+            SELECT d.department_name, NVL(SUM(e.salary), 0) as total_salary 
+            FROM DEPARTMENTS d LEFT JOIN EMPLOYEES e ON d.department_id = e.department_id 
+            GROUP BY d.department_name
+        """)
+        return render_template('dashboard_hr.html', stats=stats, dept_data=dept_data,
+                               recent_activity=recent_activity, top_performers=top_performers,
+                               attendance_today=attendance_today, salary_data=salary_data)
         
     else:
         # Dummy matching logic for employee dashboard based on previous profile logic
