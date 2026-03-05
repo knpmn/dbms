@@ -327,7 +327,7 @@
 
 <body>
 
-        {% if session.user_id %}
+        {% if session.user_id or session.emp_id %}
 
         <!-- Sidebar -->
         <div id="sidebar">
@@ -341,6 +341,7 @@
                 </div>
 
                 <nav>
+                        {% if session.user_id %}
                         <a href="{{ url_for('auth.dashboard') }}"
                                 class="nav-link {% if request.endpoint == 'auth.dashboard' %}active{% endif %}">
                                 <span class="material-icons-outlined">dashboard</span> Dashboard
@@ -403,19 +404,33 @@
                                 <span class="material-icons-outlined">description</span>
                                 {% if session.role == 'Employee' %}My {% endif %}B&amp;P Log
                         </a>
+
+                        {% elif session.emp_id %}
+                        {# Employee self-service sidebar (logged in by name, no user account) #}
+                        <a href="{{ url_for('auth.employee_dashboard') }}"
+                                class="nav-link {% if request.endpoint == 'auth.employee_dashboard' %}active{% endif %}">
+                                <span class="material-icons-outlined">badge</span> My Profile
+                        </a>
+                        {% endif %}
                 </nav>
 
                 <div class="sidebar-footer">
                         <div class="user-row">
                                 <div class="user-avatar"><span class="material-icons">person</span></div>
                                 <div style="overflow:hidden">
-                                        <div class="user-name">{{ session.username }}</div>
+                                        <div class="user-name">{{ session.username or session.emp_name }}</div>
                                         <div class="user-role">{{ session.role }}</div>
                                 </div>
                         </div>
+                        {% if session.user_id %}
                         <a href="{{ url_for('auth.logout') }}" class="logout-link">
                                 <span class="material-icons">logout</span> Logout
                         </a>
+                        {% else %}
+                        <a href="{{ url_for('auth.employee_logout') }}" class="logout-link">
+                                <span class="material-icons">logout</span> Logout
+                        </a>
+                        {% endif %}
                 </div>
         </div>
 

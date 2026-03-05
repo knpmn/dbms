@@ -11,7 +11,7 @@
                 <div class="col-md-6">
                     <label class="form-label fw-medium">Penalty Level</label>
                     <select name="penalty_level" required class="form-select">
-                        {% for lvl in ['Minor','Major','Severe'] %}
+                        {% for lvl in ['Low','Medium','High'] %}
                         <option value="{{ lvl }}" {% if record and record.penalty_level==lvl %}selected{% endif %}>{{
                             lvl }}</option>
                         {% endfor %}

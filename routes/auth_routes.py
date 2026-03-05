@@ -42,6 +42,98 @@ def logout():
     return redirect(url_for('auth.login'))
 
 
+@auth_bp.route('/employee-lookup', methods=['POST'])
+def employee_lookup():
+    """Look up an employee by first and last name (no password required)."""
+    first_name = request.form.get('first_name', '').strip()
+    last_name = request.form.get('last_name', '').strip()
+
+    if not first_name or not last_name:
+        flash('Please enter both first and last name.', 'danger')
+        return redirect(url_for('auth.login', tab='employee'))
+
+    matches = execute_query(
+        """SELECT e.employee_id, e.first_name, e.last_name,
+                  d.department_name, p.position_name
+           FROM EMPLOYEES e
+           JOIN DEPARTMENTS d ON e.department_id = d.department_id
+           JOIN POSITIONS   p ON e.position_id   = p.position_id
+           WHERE UPPER(e.first_name) = UPPER(:fn)
+             AND UPPER(e.last_name)  = UPPER(:ln)""",
+        {'fn': first_name, 'ln': last_name}
+    )
+
+    if not matches:
+        flash(f'No employee found with name "{first_name} {last_name}".', 'danger')
+        return redirect(url_for('auth.login', tab='employee'))
+
+    if len(matches) == 1:
+        emp = matches[0]
+        session['emp_id'] = emp['employee_id']
+        session['emp_name'] = f"{emp['first_name']} {emp['last_name']}"
+        session['role'] = 'Employee'
+        return redirect(url_for('auth.employee_dashboard'))
+
+    # Multiple matches — pick the first one (simplest approach)
+    emp = matches[0]
+    session['emp_id'] = emp['employee_id']
+    session['emp_name'] = f"{emp['first_name']} {emp['last_name']}"
+    session['role'] = 'Employee'
+    return redirect(url_for('auth.employee_dashboard'))
+
+
+@auth_bp.route('/employee-dashboard')
+def employee_dashboard():
+    """Self-service dashboard for employees who logged in by name."""
+    if 'emp_id' not in session:
+        flash('Please look up your profile first.', 'warning')
+        return redirect(url_for('auth.login', tab='employee'))
+
+    emp_id = session['emp_id']
+
+    emp = execute_one(
+        """SELECT e.employee_id, e.first_name, e.last_name, e.salary,
+                  TO_CHAR(e.start_date,'YYYY-MM-DD') AS start_date,
+                  d.department_name, p.position_name
+           FROM EMPLOYEES e
+           JOIN DEPARTMENTS d ON e.department_id = d.department_id
+           JOIN POSITIONS   p ON e.position_id   = p.position_id
+           WHERE e.employee_id = :eid""",
+        {'eid': emp_id}
+    )
+
+    if not emp:
+        session.clear()
+        flash('Employee record not found.', 'danger')
+        return redirect(url_for('auth.login', tab='employee'))
+
+    stats = {
+        'attendance': execute_one("SELECT COUNT(*) AS c FROM ATTENDANCE WHERE employee_id = :e", {'e': emp_id})['c'],
+        'bonus': execute_one("SELECT COUNT(*) AS c FROM BONUS_POINTS WHERE employee_id = :e", {'e': emp_id})['c'],
+        'penalties': execute_one("SELECT COUNT(*) AS c FROM PENALTIES WHERE employee_id = :e", {'e': emp_id})['c']
+    }
+
+    recent_attendance = execute_query(
+        """SELECT * FROM (
+               SELECT TO_CHAR(date_col, 'YYYY-MM-DD') AS date_col, status
+               FROM ATTENDANCE WHERE employee_id = :e
+               ORDER BY date_col DESC
+           ) WHERE ROWNUM <= 10""",
+        {'e': emp_id}
+    )
+
+    return render_template('employee_self.html', emp=emp, stats=stats,
+                           recent_attendance=recent_attendance)
+
+
+@auth_bp.route('/employee-logout')
+def employee_logout():
+    """Clear employee self-service session."""
+    session.clear()
+    flash('You have been logged out.', 'info')
+    return redirect(url_for('auth.login'))
+
+
 @auth_bp.route('/dashboard')
 def dashboard():
     if 'user_id' not in session:

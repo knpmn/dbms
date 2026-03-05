@@ -28,53 +28,176 @@
             box-shadow: 0 0 0 3px rgba(50, 50, 50, .2);
         }
 
-        .btn-purple {
+        .btn-dark-custom {
             background: #333333;
             color: #fff;
         }
 
-        .btn-purple:hover {
+        .btn-dark-custom:hover {
             background: #1a1a1a;
             color: #fff;
+        }
+
+        .btn-outline-custom {
+            border: 2px solid #333333;
+            color: #333333;
+        }
+
+        .btn-outline-custom:hover {
+            background: #333333;
+            color: #fff;
+        }
+
+        .divider-text {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #999;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            font-weight: 500;
+        }
+
+        .divider-text::before,
+        .divider-text::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #ddd;
+        }
+
+        .tab-btn {
+            flex: 1;
+            border: none;
+            background: #f0f0f0;
+            padding: 12px;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            color: #666;
+            transition: all .2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .tab-btn:first-child {
+            border-radius: 12px 0 0 0;
+        }
+
+        .tab-btn:last-child {
+            border-radius: 0 12px 0 0;
+        }
+
+        .tab-btn.active {
+            background: #fff;
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
         }
     </style>
 </head>
 
 <body>
-    <div class="container" style="max-width:420px">
-        <div class="card login-card border-0 p-4">
-            <div class="text-center mb-4">
-                <div class="d-inline-flex align-items-center justify-content-center rounded-3 mb-3"
-                    style="width:60px;height:60px;background:#333333">
-                    <span class="material-icons text-white" style="font-size:28px">work</span>
-                </div>
-                <h4 class="fw-bold mb-1">Smart HR</h4>
-                <p class="text-muted small mb-0">Human Resource Management System</p>
+    <div class="container" style="max-width:460px">
+        <div class="text-center mb-4">
+            <div class="d-inline-flex align-items-center justify-content-center rounded-3 mb-3"
+                style="width:60px;height:60px;background:#333333">
+                <span class="material-icons text-white" style="font-size:28px">work</span>
+            </div>
+            <h4 class="fw-bold mb-1 text-white">Smart HR</h4>
+            <p class="text-white-50 small mb-0">Human Resource Management System</p>
+        </div>
+
+        <div class="card login-card border-0 overflow-hidden">
+            <!-- Tabs -->
+            <div class="d-flex">
+                <button class="tab-btn active" onclick="switchTab('admin')" id="tab-admin">
+                    <span class="material-icons" style="font-size:18px">admin_panel_settings</span>
+                    Admin / HR
+                </button>
+                <button class="tab-btn" onclick="switchTab('employee')" id="tab-employee">
+                    <span class="material-icons" style="font-size:18px">person_search</span>
+                    Employee
+                </button>
             </div>
 
-            {% with messages = get_flashed_messages(with_categories=true) %}
-            {% for cat, msg in messages %}
-            <div
-                class="alert alert-{% if cat in ('danger','error') %}danger{% elif cat == 'success' %}success{% else %}info{% endif %} py-2 small">
-                {{ msg }}
-            </div>
-            {% endfor %}
-            {% endwith %}
+            <div class="p-4">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for cat, msg in messages %}
+                <div
+                    class="alert alert-{% if cat in ('danger','error') %}danger{% elif cat == 'success' %}success{% else %}info{% endif %} py-2 small">
+                    {{ msg }}
+                </div>
+                {% endfor %}
+                {% endwith %}
 
-            <form method="POST" action="{{ url_for('auth.login') }}">
-                <div class="mb-3">
-                    <label class="form-label fw-medium" for="username">Username</label>
-                    <input id="username" type="text" name="username" class="form-control" required autofocus>
+                <!-- Admin / HR Login Panel -->
+                <div class="tab-panel active" id="panel-admin">
+                    <p class="text-muted small mb-3">Sign in with your admin or HR staff credentials.</p>
+                    <form method="POST" action="{{ url_for('auth.login') }}">
+                        <div class="mb-3">
+                            <label class="form-label fw-medium" for="username">Username</label>
+                            <input id="username" type="text" name="username" class="form-control" required autofocus>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-medium" for="password">Password</label>
+                            <input id="password" type="password" name="password" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-dark-custom w-100 py-2 fw-medium">
+                            <span class="material-icons align-middle me-1" style="font-size:18px">login</span>
+                            Sign In
+                        </button>
+                    </form>
                 </div>
-                <div class="mb-4">
-                    <label class="form-label fw-medium" for="password">Password</label>
-                    <input id="password" type="password" name="password" class="form-control" required>
+
+                <!-- Employee Lookup Panel -->
+                <div class="tab-panel" id="panel-employee">
+                    <p class="text-muted small mb-3">Enter your name to look up your employee profile.</p>
+                    <form method="POST" action="{{ url_for('auth.employee_lookup') }}">
+                        <div class="mb-3">
+                            <label class="form-label fw-medium" for="first_name">First Name</label>
+                            <input id="first_name" type="text" name="first_name" class="form-control"
+                                placeholder="e.g. James" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-medium" for="last_name">Last Name</label>
+                            <input id="last_name" type="text" name="last_name" class="form-control"
+                                placeholder="e.g. Smith" required>
+                        </div>
+                        <button type="submit" class="btn btn-outline-custom w-100 py-2 fw-medium">
+                            <span class="material-icons align-middle me-1" style="font-size:18px">search</span>
+                            Find My Profile
+                        </button>
+                    </form>
                 </div>
-                <button type="submit" class="btn btn-purple w-100 py-2 fw-medium">Sign In</button>
-            </form>
+            </div>
         </div>
         <p class="text-center text-white-50 small mt-3">&copy; 2026 Smart HR System</p>
     </div>
+
+    <script>
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('tab-' + tab).classList.add('active');
+            document.getElementById('panel-' + tab).classList.add('active');
+        }
+
+        // Auto-switch to employee tab if there's a URL param
+        if (new URLSearchParams(window.location.search).get('tab') === 'employee') {
+            switchTab('employee');
+        }
+    </script>
 </body>
 
 </html>
