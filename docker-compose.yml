@@ -14,3 +14,13 @@ services:
       ORA_HOST: ${ORA_HOST}
       ORA_PORT: ${ORA_PORT}
       ORA_SID:  ${ORA_SID}
+
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: db_tunnel
+    restart: always
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TOKEN}
+    depends_on:
+      - web
+    environment:
+      TUNNEL_URL: http://web:80
