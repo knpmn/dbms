@@ -9,8 +9,8 @@ services:
     volumes:
       - "./www:/var/www/html"
     environment:
-      ORA_USER: AI_683380317_6
-      ORA_PASS: p1234
-      ORA_HOST: 10.199.8.14
-      ORA_PORT: 1726
-      ORA_SID:  ORCLCDB
+      ORA_USER: ${ORA_USER}
+      ORA_PASS: ${ORA_PASS}
+      ORA_HOST: ${ORA_HOST}
+      ORA_PORT: ${ORA_PORT}
+      ORA_SID:  ${ORA_SID}

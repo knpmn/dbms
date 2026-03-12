@@ -1,5 +1,7 @@
 # Oracle credentials — never commit these
 oracle_cred.txt
+.env
+
 
 # Docker ignore
 .env
