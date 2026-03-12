@@ -1,0 +1,16 @@
+services:
+
+  web:
+    build: .
+    container_name: db_web
+    restart: always
+    ports:
+      - "8080:80"
+    volumes:
+      - "./www:/var/www/html"
+    environment:
+      ORA_USER: AI_683380317_6
+      ORA_PASS: p1234
+      ORA_HOST: 10.199.8.14
+      ORA_PORT: 1726
+      ORA_SID:  ORCLCDB

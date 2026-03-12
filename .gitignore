@@ -1,0 +1,9 @@
+# Oracle credentials — never commit these
+oracle_cred.txt
+
+# Docker ignore
+.env
+
+# OS junk
+.DS_Store
+Thumbs.db
