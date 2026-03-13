@@ -1,102 +1,70 @@
-# HR Oracle Dashboard
+# HR Oracle Dashboard - คู่มือการติดตั้งโปรเจกต์
 
-A PHP/Apache web dashboard that connects to an Oracle database and displays 10 HR views.
+คู่มือนี้จะอธิบายขั้นตอนอย่างละเอียดในการติดตั้งและรันโปรเจกต์ HR Oracle Dashboard บนเครื่องของคุณโดยใช้สคริปต์ PowerShell ที่เตรียมไว้ให้
 
-## Prerequisites
+## 📋 สิ่งที่ต้องเตรียม (Prerequisites)
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and **running**
-- Network access to the Oracle server (must be on campus/VPN)
-
+ก่อนเริ่มต้น กรุณาตรวจสอบให้แน่ใจว่าคุณได้ติดตั้งและเปิดใช้งานโปรแกรมต่อไปนี้:
+*   **[Docker Desktop](https://www.docker.com/products/docker-desktop/)**: ต้องติดตั้งและเปิดโปรแกรมทิ้งไว้บนเครื่องของคุณ
+*   **Windows PowerShell**: จำเป็นสำหรับการรันสคริปต์ติดตั้ง
+*   **`cloudflared.exe` (ทางเลือก แต่แนะนำ)**: ถ้าอยากให้คนอื่นดู localhost ของเราได้ต้องใช้ `cloudflared.exe` 
+    *   **วิธีดาวน์โหลด:** ดาวน์โหลดไฟล์สำหรับ Windows จาก [เอกสารอย่างเป็นทางการของ Cloudflare](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/)
+    *   เปลี่ยนชื่อไฟล์ที่ดาวน์โหลดมาให้เป็น `cloudflared.exe` (หากชื่อไฟล์เป็นแบบอื่น เช่น `cloudflared-windows-amd64.exe`)
+    *   นำไฟล์ `cloudflared.exe` ไปวางไว้ในโฟลเดอร์โปรเจกต์
 ---
 
-## Quick Start (one command)
+## 🚀 ขั้นตอนที่ 1: อนุญาตให้รันสคริปต์ PowerShell ได้
 
+โดยค่าเริ่มต้น Windows จะจำกัดการรันสคริปต์ PowerShell เพื่อความปลอดภัย คุณจำเป็นต้องตั้งค่าเพื่ออนุญาตให้ผู้ใช้ปัจจุบันสามารถรันสคริปต์ได้
+
+1. เปิดโปรแกรม **PowerShell** (Administrator)
+2. รันคำสั่งต่อไปนี้เพื่อเปลี่ยนนโยบายการรันสคริปต์ (Execution Policy):
+
+   ```powershell
+   Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+   ```
+---
+
+## ▶️ ขั้นตอนที่ 2: รันสคริปต์ติดตั้ง
+
+เมื่อตั้งค่านโยบายการรันสคริปต์เรียบร้อยแล้ว คุณสามารถเริ่มต้นระบบได้ทันที โดยมี 2 ตัวเลือกตามความต้องการของคุณ:
+
+1. เปิด File Explorer และเข้าไปที่โฟลเดอร์โปรเจกต์
+2. **คลิกขวา** ที่ไฟล์สคริปต์ที่คุณตัองการ (ดูด้านล่าง) แล้วเลือก **"Run with PowerShell"**
+   *หรือคุณสามารถรันคำสั่งโดยตรงผ่าน PowerShell terminal ก็ได้:*
+
+### ตัวเลือก A: ใช้งานเฉพาะรันภายในเครื่อง (ใช้ `oneclick.ps1`)
+ใช้สคริปต์นี้หากคุณต้องการเข้าถึง Dashboard จากเครื่องคอมพิวเตอร์ของคุณเองเท่านั้น
 ```powershell
-# In the project folder:
-docker compose up -d --build
+.\oneclick.ps1
 ```
+**สคริปต์นี้ทำอะไรบ้าง:**
+1. ตรวจสอบว่าเปิด Docker Desktop เอาไว้หรือไม่
+2. สร้างและรัน Docker containers (`docker compose up -d --build`)
+3. เปิดใช้งาน Cloudflare tunnel อยู่เบื้องหลัง (หากมี `cloudflared.exe`) เพื่อให้บริการที่พอร์ต `http://localhost:8080`
+4. รอให้เซิร์ฟเวอร์เปิดใช้งานเสร็จสิ้น จากนั้นเบราว์เซอร์ของคุณจะเปิดหน้า `http://localhost:8080` ขึ้นมาให้โดยอัตโนมัติ
 
-Then open → **http://localhost:8080**
-
-To stop:
+### ตัวเลือก B: สร้างลิงก์เปิดให้คนอื่นใช้ผ่านอินเทอร์เน็ต (ใช้ `oneclick_tunnel.ps1`)
+ใช้สคริปต์นี้หากคุณต้องการแชร์ Dashboard ให้ผู้อื่นเข้าถึงผ่านอินเทอร์เน็ตด้วยลิงก์สาธารณะของ Cloudflare (เช่น เพื่อทดสอบระบบบนมือถือ หรือส่งลิงก์ให้ทีม/อาจารย์ดู)
 ```powershell
-docker compose down
+.\oneclick_tunnel.ps1
 ```
+**สคริปต์นี้ทำอะไรบ้าง:**
+1. สร้างและรัน Docker containers (`docker compose up -d --build`)
+2. เปิดใช้งาน Cloudflare tunnel และรอรับลิงก์สาธารณะ (นามสกุล `.trycloudflare.com`) แบบอัตโนมัติ
+3. แสดงทั้ง URL สำหรับเข้าใช้งานในเครื่อง และ **Public Link (ลิงก์สาธารณะ)** ในหน้าจอกอนโซล PowerShell เพื่อให้คุณสามารถคัดลอกและนำไปแชร์ได้
+4. เปิดเบราว์เซอร์ของคุณไปยัง `http://localhost:8080` โดยอัตโนมัติ
 
 ---
 
-## Fully Automated — use the startup script
+## ขั้นตอนที่ 3: วิธีการปิดระบบ
 
-A `start.ps1` script is included. Double-click it or right-click → *Run with PowerShell*.  
-It will:
-1. Check Docker is running
-2. Build the image (only rebuilds if something changed)
-3. Start the container
-4. Open the browser automatically
+เมื่อคุณทดสอบหรือพัฒนาเสร็จแล้ว:
 
----
-
-## Changing Oracle Credentials
-
-Edit **`docker-compose.yml`** (the `environment:` section):
-
-```yaml
-environment:
-  ORA_USER: AI_683380317_6   # ← your Oracle username
-  ORA_PASS: p1234            # ← your password
-  ORA_HOST: 10.199.8.14      # ← Oracle server IP
-  ORA_PORT: 1726             # ← port
-  ORA_SID:  ORCLCDB          # ← SID
-```
-
-After editing, run: `docker compose up -d --build`
-
----
-
-## First-time Setup (only once)
-
-The Oracle **views** must exist in your database before the app can display data.  
-Run `oracledatabase.sql` against your Oracle server once using SQL*Plus or SQL Developer:
-
-```sql
--- In SQL*Plus:
-@oracledatabase.sql
-```
-
----
-
-## Project Structure
-
-```
-dbweb/
-├── docker-compose.yml   ← credentials & port config
-├── Dockerfile           ← builds PHP + OCI8 image
-├── oracledatabase.sql   ← creates tables, inserts data, creates views
-├── start.ps1            ← one-click startup script
-└── www/
-    ├── config.php       ← Oracle connection helper
-    ├── navbar.php       ← sidebar + shared CSS
-    ├── footer.php
-    ├── index.php        ← redirects to view1
-    ├── view1.php        ← Dept Headcount
-    ├── view2.php        ← Monthly Bonus Summary
-    ├── view3.php        ← Top Performance Bonus
-    ├── view4.php        ← Employee Directory
-    ├── view5.php        ← Contract Expiry Alert
-    ├── view6.php        ← Penalty History
-    ├── view7.php        ← Today's Attendance
-    ├── view8.php        ← Monthly Attendance Summary
-    ├── view9.php        ← Active Recruitment
-    └── view10.php       ← Yearly Bonus Overview
-```
-
----
-
-## Troubleshooting
-
-| Problem | Fix |
-|---|---|
-| Page shows `oci_connect() undefined` | Docker image wasn't rebuilt — run `docker compose up -d --build` |
-| Page shows Oracle connection error | Wrong credentials in `docker-compose.yml`, or not on campus network |
-| Port 8080 already in use | Change `"8080:80"` to e.g. `"8081:80"` in `docker-compose.yml` |
-| Container won't start | Make sure Docker Desktop is open and running |
+1. กลับไปที่หน้าต่าง PowerShell ที่ถูกเปิดขึ้นมาจากการรันสคริปต์
+2. กดปุ่ม **Enter** ตามที่หน้าจอบอก
+3. การทำเช่นนี้จะเป็นการปิดการทำงานของ Cloudflare tunnel อย่างสมบูรณ์และปิดหน้าต่างลง
+4. *(ทางเลือก)* หากต้องการปิดการทำงานของ Docker containers ทั้งหมด ให้เปิด Terminal ในโฟลเดอร์โปรเจกต์แล้วรันคำสั่ง:
+   ```bash
+   docker compose down
+   ```

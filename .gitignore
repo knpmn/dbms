@@ -9,3 +9,7 @@ oracle_cred.txt
 # OS junk
 .DS_Store
 Thumbs.db
+
+# Cloudflare tunnel
+cloudflared.exe
+cf_tunnel.log
