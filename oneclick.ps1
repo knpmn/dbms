@@ -16,7 +16,7 @@ try {
 }
 
 # 2. Build & Start Docker
-Write-Host "[2/4] Starting container..." -ForegroundColor Yellow
+Write-Host "[2/5] Starting container..." -ForegroundColor Yellow
 Set-Location $projectDir
 docker compose up -d --build
 if ($LASTEXITCODE -ne 0) {
@@ -24,8 +24,22 @@ if ($LASTEXITCODE -ne 0) {
     Read-Host "Press Enter to exit"; exit 1
 }
 
-# 3. Start Cloudflare Quick Tunnel
-Write-Host "[3/4] Starting Cloudflare Quick Tunnel..." -ForegroundColor Yellow
+# 3. Check for Cloudflared tunnel executable
+Write-Host "[3/5] Checking for cloudflared.exe..." -ForegroundColor Yellow
+if (-not (Test-Path $cfExe)) {
+    Write-Host "      cloudflared.exe not found! Downloading..." -ForegroundColor Cyan
+    try {
+        Invoke-WebRequest -Uri "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe" -OutFile $cfExe -UseBasicParsing
+        Write-Host "      Download complete." -ForegroundColor Green
+    } catch {
+        Write-Host "      ERROR: Failed to download cloudflared.exe." -ForegroundColor Red
+    }
+} else {
+    Write-Host "      cloudflared.exe is present." -ForegroundColor Green
+}
+
+# 4. Start Cloudflare Quick Tunnel
+Write-Host "[4/5] Starting Cloudflare Quick Tunnel..." -ForegroundColor Yellow
 if (Test-Path $cfExe) {
     # Starts the tunnel in a separate background process
     $cfProcess = Start-Process -FilePath $cfExe -ArgumentList "tunnel --url $url" -PassThru -WindowStyle Hidden
@@ -34,8 +48,8 @@ if (Test-Path $cfExe) {
     Write-Host "      WARNING: cloudflared.exe not found in $projectDir" -ForegroundColor Red
 }
 
-# 4. Wait for Server & Finish
-Write-Host "[4/4] Finalizing..." -ForegroundColor Yellow
+# 5. Wait for Server & Finish
+Write-Host "[5/5] Finalizing..." -ForegroundColor Yellow
 $ready = $false
 for ($i = 0; $i -lt 15; $i++) {
     Start-Sleep -Seconds 1

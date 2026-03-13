@@ -7,10 +7,8 @@
 ก่อนเริ่มต้น กรุณาตรวจสอบให้แน่ใจว่าคุณได้ติดตั้งและเปิดใช้งานโปรแกรมต่อไปนี้:
 *   **[Docker Desktop](https://www.docker.com/products/docker-desktop/)**: ต้องติดตั้งและเปิดโปรแกรมทิ้งไว้บนเครื่องของคุณ
 *   **Windows PowerShell**: จำเป็นสำหรับการรันสคริปต์ติดตั้ง
-*   **`cloudflared.exe` (ทางเลือก แต่แนะนำ)**: ถ้าอยากให้คนอื่นดู localhost ของเราได้ต้องใช้ `cloudflared.exe` 
-    *   **วิธีดาวน์โหลด:** ดาวน์โหลดไฟล์สำหรับ Windows จาก [เอกสารอย่างเป็นทางการของ Cloudflare](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/)
-    *   เปลี่ยนชื่อไฟล์ที่ดาวน์โหลดมาให้เป็น `cloudflared.exe` (หากชื่อไฟล์เป็นแบบอื่น เช่น `cloudflared-windows-amd64.exe`)
-    *   นำไฟล์ `cloudflared.exe` ไปวางไว้ในโฟลเดอร์โปรเจกต์
+
+*(หมายเหตุ: ระบบจะทำการดาวน์โหลด `cloudflared.exe` ให้โดยอัตโนมัติเมื่อรันสคริปต์ หากคุณต้องการใช้งานฟีเจอร์แชร์ลิงก์)*
 ---
 
 ## 🌐 ขั้นตอนที่ 1: เชื่อมต่อเครือข่ายมหาวิทยาลัย (KKU VPN)

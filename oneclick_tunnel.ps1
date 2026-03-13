@@ -6,13 +6,27 @@ $tempLog    = Join-Path $projectDir "cf_tunnel.log"
 Write-Host "--- HR Oracle Dashboard ---" -ForegroundColor Cyan
 
 # 1. Start Docker (Simplified check)
-Write-Host "[1/3] Starting Docker containers..." -ForegroundColor Yellow
+Write-Host "[1/4] Starting Docker containers..." -ForegroundColor Yellow
 Set-Location $projectDir
 docker compose up -d --build
 if ($LASTEXITCODE -ne 0) { Write-Host "Docker failed!" -ForegroundColor Red; exit 1 }
 
-# 2. Start Tunnel and Capture URL
-Write-Host "[2/3] Generating Cloudflare URL..." -ForegroundColor Yellow
+# 2. Check for Cloudflared tunnel executable
+Write-Host "[2/4] Checking for cloudflared.exe..." -ForegroundColor Yellow
+if (-not (Test-Path $cfExe)) {
+    Write-Host "      cloudflared.exe not found! Downloading..." -ForegroundColor Cyan
+    try {
+        Invoke-WebRequest -Uri "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe" -OutFile $cfExe -UseBasicParsing
+        Write-Host "      Download complete." -ForegroundColor Green
+    } catch {
+        Write-Host "      ERROR: Failed to download cloudflared.exe." -ForegroundColor Red
+    }
+} else {
+    Write-Host "      cloudflared.exe is present." -ForegroundColor Green
+}
+
+# 3. Start Tunnel and Capture URL
+Write-Host "[3/4] Generating Cloudflare URL..." -ForegroundColor Yellow
 if (Test-Path $cfExe) {
     # Start tunnel and redirect output to a temp log file
     Start-Process -FilePath $cfExe -ArgumentList "tunnel --url $url" -RedirectStandardError $tempLog -WindowStyle Hidden
@@ -32,8 +46,8 @@ if (Test-Path $cfExe) {
     }
 }
 
-# 3. Display Results
-Write-Host "[3/3] System Ready!" -ForegroundColor Green
+# 4. Display Results
+Write-Host "[4/4] System Ready!" -ForegroundColor Green
 Write-Host ""
 Write-Host "===============================================" -ForegroundColor Cyan
 Write-Host "  LOCAL ACCESS:  $url" -ForegroundColor White
