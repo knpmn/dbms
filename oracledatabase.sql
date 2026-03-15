@@ -317,3 +317,88 @@ SELECT yb.yearly_bonus_id, e.employee_id, e.first_name, e.last_name,
        yb.bonus_year, yb.yearly_bonus_score, yb.total_bonus_score
 FROM Employees e, Yearly_Bonus yb
 WHERE e.employee_id = yb.employee_id;
+
+
+
+
+
+
+
+
+
+-- NEW VIEW แก้
+
+
+
+-- View 2
+CREATE OR REPLACE VIEW vw_monthly_bonus_summary AS
+SELECT e.employee_id, e.first_name, e.last_name,
+       TO_NUMBER(TO_CHAR(b.bonus_date, 'MM'))   AS bonus_month,
+       TO_NUMBER(TO_CHAR(b.bonus_date, 'YYYY')) AS bonus_year,
+       LEAST(SUM(b.points), 10)                 AS total_monthly_points
+FROM Employees e, Bonus_Points b
+WHERE e.employee_id = b.employee_id
+GROUP BY e.employee_id, e.first_name, e.last_name,
+         TO_NUMBER(TO_CHAR(b.bonus_date, 'MM')),
+         TO_NUMBER(TO_CHAR(b.bonus_date, 'YYYY'));
+
+-- View 3
+CREATE OR REPLACE VIEW vw_top_performance_bonus AS
+WITH monthly_capped AS (
+    SELECT
+        e.employee_id,
+        e.first_name,
+        e.last_name,
+        TO_NUMBER(TO_CHAR(b.bonus_date, 'YYYY')) AS bonus_year,
+        TO_NUMBER(TO_CHAR(b.bonus_date, 'MM'))   AS bonus_month,
+        LEAST(SUM(b.points), 10)                 AS capped_points
+    FROM Employees e, Bonus_Points b
+    WHERE e.employee_id = b.employee_id
+    GROUP BY
+        e.employee_id, e.first_name, e.last_name,
+        TO_NUMBER(TO_CHAR(b.bonus_date, 'YYYY')),
+        TO_NUMBER(TO_CHAR(b.bonus_date, 'MM'))
+)
+SELECT
+    employee_id,
+    first_name,
+    last_name,
+    SUM(capped_points) AS total_accumulated_points
+FROM monthly_capped
+GROUP BY employee_id, first_name, last_name;
+
+-- View 10
+CREATE OR REPLACE VIEW vw_yearly_bonus_overview AS
+WITH monthly_capped AS (
+    SELECT
+        e.employee_id,
+        e.first_name,
+        e.last_name,
+        TO_NUMBER(TO_CHAR(b.bonus_date, 'YYYY')) AS bonus_year,
+        TO_NUMBER(TO_CHAR(b.bonus_date, 'MM'))   AS bonus_month,
+        LEAST(SUM(b.points), 10)                 AS capped_points
+    FROM Employees e, Bonus_Points b
+    WHERE e.employee_id = b.employee_id
+    GROUP BY
+        e.employee_id, e.first_name, e.last_name,
+        TO_NUMBER(TO_CHAR(b.bonus_date, 'YYYY')),
+        TO_NUMBER(TO_CHAR(b.bonus_date, 'MM'))
+),
+yearly_agg AS (
+    SELECT
+        employee_id,
+        first_name,
+        last_name,
+        bonus_year,
+        SUM(capped_points) AS total_bonus_score
+    FROM monthly_capped
+    GROUP BY employee_id, first_name, last_name, bonus_year
+)
+SELECT
+    ROW_NUMBER() OVER (ORDER BY bonus_year DESC, total_bonus_score DESC) AS yearly_bonus_id,
+    employee_id,
+    first_name,
+    last_name,
+    bonus_year,
+    total_bonus_score
+FROM yearly_agg;
